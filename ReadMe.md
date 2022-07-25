@@ -8,4 +8,9 @@ Both repositories serve to develop an application that aids students and schools
 # List of available APIs: 
 An api for account creation,
 An api for account edit
-An api for listview..
+An api for listview 
+
+
+# Local postgres configuration : 
+username = postgres
+password = postgres

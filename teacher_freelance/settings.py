@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -37,6 +38,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'backend',
+    'user_app',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
@@ -81,13 +87,13 @@ WSGI_APPLICATION = 'teacher_freelance.wsgi.application'
 # }
 
 #? Postgres database
-#TODO rename the database and config it for testing [remember to redo the configuration on deploiement.]
+#TODO reconfig the datebase when deploying to a server.
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'dbtest', 
+        'NAME': 'postgres', 
         'USER': 'postgres', 
-        'PASSWORD': '1234',
+        'PASSWORD': 'postgres',
         'HOST': '127.0.0.1', 
         'PORT': '5432',
     }
@@ -137,3 +143,41 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        # 'rest_framework.authentication.BasicAuthentication',
+        # 'rest_framework.authentication.TokenAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        # 'rest_framework.authentication.SessionAuthentication',
+    ],
+    # 'DEFAULT_PERMISSION_CLASSES': [
+    #     'rest_framework.permissions.IsAuthenticated',
+    # ],
+
+    #? throttling settings
+    # 'DEFAULT_THROTTLE_CLASSES': [
+    #     'rest_framework.throttling.AnonRateThrottle',
+    #     'rest_framework.throttling.UserRateThrottle'
+    # ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '50/day',
+        'user': '100/day',
+        'review-create' : '20/day',
+        'review-list' : '200/day',
+        'review-detail' : '500/day',
+    },
+
+    # 'DEFAULT_PAGINATION_CLASS' : 'rest_framework.pagination.LimitOffsetPagination',
+    # 'PAGE_SIZE' : 3,
+
+    #? to disable the restfromwork browsable API renderer, and instead only returnning json when visiting a url page :
+    # 'DEFAULT_RENDERER_CLASSES' : ('rest_framework.renderers.JSONRenderer',)
+}
+
+
+
+SIMPLE_JWT = {
+    'ROTATE_REFRESH_TOKENS' :True,
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=24),
+}
