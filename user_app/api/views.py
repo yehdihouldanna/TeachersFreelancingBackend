@@ -37,8 +37,12 @@ def login_view(request):
 @api_view(['POST',])
 def log_out_view(request):
     if request.method=='POST':
-        request.user.auth_token.delete()
-        return Response(status=status.HTTP_200_OK)
+        try :
+            request.user.auth_token.delete()
+            return Response(status=status.HTTP_200_OK)
+        except : #? the jwt token will stay valid for it's whole duration, to logout the client has to delete its access token from the cache.
+            pass
+
 
 @api_view(['POST',])
 def registration_view(request):

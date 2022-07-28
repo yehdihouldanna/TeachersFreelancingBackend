@@ -1,13 +1,13 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-
+from user_app.models import CustomUser
 # Create your models here.
 
 
 class LoginSerializer(serializers.Serializer):
 
     class Meta:
-        model = User
+        model = CustomUser
         fields = ['username','password']
 
     
@@ -16,7 +16,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
     password2 = serializers.CharField(style={'input_type':'password'},write_only=True)
 
     class Meta:
-        model = User
+        model = CustomUser
         fields = ['username','email','password','password2']
         extra_kwargs={
             'password' : {'write_only' : True}  
@@ -29,13 +29,13 @@ class RegistrationSerializer(serializers.ModelSerializer):
         if password != password2:
             raise serializers.ValidationError({'error': ' Passwords should match'})
 
-        if User.objects.filter(email=self.validated_data['email']).exists():
+        if CustomUser.objects.filter(email=self.validated_data['email']).exists():
             raise serializers.ValidationError({'error' : 'Email already exists'})
 
-        if User.objects.filter(username=self.validated_data['username']).exists():
+        if CustomUser.objects.filter(username=self.validated_data['username']).exists():
             raise serializers.ValidationError({'error' : 'username already taken'})
 
-        account = User(email=self.validated_data['email'],username = self.validated_data['username'])
+        account = CustomUser(email=self.validated_data['email'],username = self.validated_data['username'])
         account.set_password(password)
         account.save()
 

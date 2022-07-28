@@ -10,6 +10,8 @@ An api for account creation,
 An api for account edit
 An api for listview 
 
+*Note* : The logout functionality requires the client (mobile to delete it's store token)
+
 
 # Local postgres configuration : 
 username = postgres
