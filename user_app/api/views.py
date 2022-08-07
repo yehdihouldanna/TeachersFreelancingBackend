@@ -3,11 +3,12 @@ from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from user_app.api.serializers import RegistrationSerializer,LoginSerializer
+from user_app.api.serializers import RegistrationSerializer,LoginSerializer,TeacherRegistrationSerializer
 # from rest_framework.authtoken.models import Token
 # from user_app import models
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
+import json
 
 
 
@@ -41,7 +42,8 @@ def log_out_view(request):
             request.user.auth_token.delete()
             return Response(status=status.HTTP_200_OK)
         except : #? the jwt token will stay valid for it's whole duration, to logout the client has to delete its access token from the cache.
-            pass
+            print("The logout request type :",request.method)
+            return Response(status=status.HTTP_200_OK)
 
 
 @api_view(['POST',])
@@ -69,3 +71,32 @@ def registration_view(request):
 
         return Response(data,status=status.HTTP_201_CREATED)
 
+@api_view(['POST'])
+def register_teacher_view(request):
+    # We have a json fields in our data so we need to process the data
+    # before passing it to the serializer
+    try:
+        input_data = json.loads(request.body)
+    except:
+        return Response({"message": "ERROR DETECT"})
+        #      use data, not request.data ↓
+    print(input_data)
+    serializer = UserTeacher_CreateSerializer(data=input_data)
+    
+    data = {}
+    if serializer.is_valid():
+        teacher_data = serializer.save()
+        data['response'] = "Teacher registration successful!"
+        data['username'] = teacher_data.user.username
+        data['email']=teacher_data.user.email
+        data['phone']=teacher_data.user.phone
+        data['is_teacher']=teacher_data.user.is_teacher
+        data['introduction'] =teacher_data.introduction
+        data['hourly_wage'] = teacher_data.hourly_wage
+        data['diploma']=teacher_data.diploma.__repr__()
+        data['token'] = get_tokens_for_user(user=teacher_data.user)
+
+    else :
+        data = serializer.errors 
+
+    return Response(data,status=status.HTTP_201_CREATED)

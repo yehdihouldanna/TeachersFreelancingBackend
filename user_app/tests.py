@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from user_app.models import CustomUser
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
@@ -25,7 +26,7 @@ class AccountTests(APITestCase):
 
     def setUp(self):
         """this help create a user to test the functionalities that require an existing user"""
-        self.user = User.objects.create_user(username="Red",password="Color.123")
+        self.user = CustomUser.objects.create_user(username="Red",password="Color.123")
 
     
 
