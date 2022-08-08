@@ -43,6 +43,18 @@ Creating a teacher on the `localhost:8000/account/register_teacher/` :
     "disponibilities" :{"lundi":["8","9","16","17","18"],"mardi":["20","21"]}
 }
 ```
+Creating a student on the `localhost:8000/account/register_student/` :
+```json
+{
+    "username" : "blue_student",
+    "email" : "blue_student@example.com",
+    "password" : "Color.123",
+    "password2" : "Color.123",
+    "phone":"92345678",
+    "classe":"0",
+    "speciality" : null
+}
+```
 
 ## Common Errors :
 

@@ -3,7 +3,7 @@ from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from user_app.api.serializers import RegistrationSerializer,LoginSerializer,TeacherRegistrationSerializer
+from user_app.api.serializers import RegistrationSerializer,LoginSerializer,TeacherRegistrationSerializer,StudentRegistrationSerializer
 # from rest_framework.authtoken.models import Token
 # from user_app import models
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -95,6 +95,29 @@ def register_teacher_view(request):
         data['hourly_wage'] = teacher_data.hourly_wage
         data['diploma']=teacher_data.diploma.__repr__()
         data['token'] = get_tokens_for_user(user=teacher_data.user)
+
+    else :
+        data = serializer.errors 
+
+    return Response(data,status=status.HTTP_201_CREATED)
+
+
+@api_view(['POST'])
+def register_student_view(request):
+   
+    serializer = StudentRegistrationSerializer(data=request.data)
+    
+    data = {}
+    if serializer.is_valid():
+        student_data = serializer.save()
+        data['response'] = "Student registration successful!"
+        data['username'] = student_data.user.username
+        data['email']=student_data.user.email
+        data['phone']=student_data.user.phone
+        data['is_student']=student_data.user.is_student
+        data['classe'] =student_data.classe
+        data['speciality'] = student_data.speciality
+        data['token'] = get_tokens_for_user(user=student_data.user)
 
     else :
         data = serializer.errors 
