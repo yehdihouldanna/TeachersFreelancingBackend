@@ -78,11 +78,11 @@ class TeacherRegistrationSerializer(serializers.ModelSerializer):
         if User.objects.filter(username=self.validated_data['username']).exists():
             raise serializers.ValidationError({'error' : 'username already taken'})
 
-        if User.objects.filter(phone=self.validated_data['phone'].exists()):
+        if User.objects.filter(phone=self.validated_data['phone']).exists():
             raise serializers.ValidationError({'error' : 'phone number already_exist'})
 
         self.phone_validator(self.validated_data['phone'])
-        account = User(email=self.validated_data['email'],username = self.validated_data['username'],phone=self.validated_data['phone'])
+        account = User(is_teacher=True,email=self.validated_data['email'],username = self.validated_data['username'],phone=self.validated_data['phone'])
         account.set_password(password)
         account.save()
 

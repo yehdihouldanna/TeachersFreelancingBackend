@@ -10,6 +10,9 @@ Both repositories serve to develop an application that aids students and schools
 The list of all the available API could be checked with swagger at :
 [http://localhost:8000/api/schema/swagger-ui/](http://localhost:8000/api/schema/swagger-ui/)
 
+To update the schema after each new api :
+`$ python manage.py spectacular --file schema.yml`
+
 don't forget to check the port and host url and then add `/api/schema/swagger-ui` to acess the swagger listing all available APIs in the backend,
 An api for account creation,
 An api for account edit

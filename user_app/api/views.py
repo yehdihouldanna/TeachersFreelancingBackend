@@ -81,7 +81,7 @@ def register_teacher_view(request):
         return Response({"message": "ERROR DETECT"})
         #      use data, not request.data ↓
     print(input_data)
-    serializer = UserTeacher_CreateSerializer(data=input_data)
+    serializer = TeacherRegistrationSerializer(data=input_data)
     
     data = {}
     if serializer.is_valid():
