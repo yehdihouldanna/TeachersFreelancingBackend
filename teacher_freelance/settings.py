@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'django_filters',
+    'drf_spectacular',
 ]
 
 AUTH_USER_MODEL = "user_app.User"
@@ -149,6 +150,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
  
 
 REST_FRAMEWORK = {
+    #? For drf_spectacular (swagger replacement) to work we need to define the auto schema :
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+
     'DEFAULT_AUTHENTICATION_CLASSES': [
         # 'rest_framework.authentication.BasicAuthentication',
         # 'rest_framework.authentication.TokenAuthentication',
