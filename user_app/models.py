@@ -5,12 +5,32 @@ from django.conf import settings
 from django.db.models.signals import post_save
 from django.dispatch import receiver 
 from rest_framework.authtoken.models import Token
-from django.core.validators import MinValueValidator , MaxValueValidator
+from django.core.validators import RegexValidator
+from django.contrib.postgres.fields import ArrayField
 from django.utils.translation import gettext_lazy as _
 
+# DAYS=("Lundi")),
+#       "Mardi")),
+#       "Mercredi")),
+#       "Jeudi")),
+#       "Vendredi")),
+#       "Samedi")),
+#       "Dimanche")))
+
+DAYS = ("Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi","Dimanche")
+def format_disponitbilites(disps):
+    """Returns a dict containins all days with their respective dipo if any."""
+    disponibilities = dict()
+    for day in DAYS:
+        try:
+            disponibilities[day] = disps[day]
+        except :
+            disponibilities[day] = []
+    return disponibilities
 
 CLASSES = (
-    ("0",_("Mahdara")),
+    ("99",_("any")),
+    ("0", _("Mahdara")),
     ("1", _("1AF")),
     ("2", _("2AF")),
     ("3", _("3AF")),
@@ -27,23 +47,25 @@ CLASSES = (
 )
 SPECIALTIES =(
     ("A",_("Literature")),
-    ("C",_("Math")),
+    ("C",_("Mathématiques")),
     ("D",_("Sciences_Naturelles")),
     ("O",_("Sciences_Religieuses")),
     ("T",_("Technique")),
     )
 
+
+
+phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.")
+
 class User(AbstractUser):
-  
-    phone = models.PositiveIntegerField(null=True,blank=True,validators=[MinValueValidator(10000000),MaxValueValidator(99999999)])
+    
+    phone = models.CharField(unique=True,validators=[phone_regex], max_length=17, blank=True) 
     is_teacher = models.BooleanField(default=False,blank=True,null=True)
     is_student = models.BooleanField(default=False,blank=True,null=True)
-
-    class Meta:
-        pass
-# class Person(User):
-    # phone = models.PositiveIntegerField(null=True,blank=True,validators=[MinValueValidator(10000000),MaxValueValidator(99999999)])
+    # USERNAME_FIELD = 'phone'
+    REQUIRED_FIELDS = ["phone","email"]
     
+
 class Student(models.Model):
 
     #? student related fields
@@ -60,8 +82,9 @@ class Teacher(models.Model):
     diploma = models.FileField(null=True,blank = True,default=None,upload_to=None,max_length=254,)
     introduction = models.CharField(max_length= 1000)
     hourly_wage = models.PositiveIntegerField(default = 1000)
-    subjects = models.JSONField(null=True)
+    subjects = ArrayField(base_field=models.CharField(max_length=50,blank=True),default=list,null=True)
     disponibilities = models.JSONField(null = True)
+    avg_rating = models.IntegerField(default = 0)
 
     def _str_(self):
         return f"TEACHER {self.user.username} | {self.user.phone} | teaches : {self.subjects} | expects {self.hourly_wage}MRU/h"

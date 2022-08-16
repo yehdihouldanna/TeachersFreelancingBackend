@@ -161,9 +161,9 @@ REST_FRAMEWORK = {
     ],
 
     'DEFAULT_RENDERER_CLASSES': [
-        'rest_framework.renderers.BrowsableAPIRenderer',
+        # 'rest_framework.renderers.BrowsableAPIRenderer',
         'rest_framework.renderers.JSONRenderer',
-        'rest_framework.renderers.TemplateHTMLRenderer',
+        # 'rest_framework.renderers.TemplateHTMLRenderer',
     ],
     # 'DEFAULT_PERMISSION_CLASSES': [
     #     'rest_framework.permissions.IsAuthenticated',
@@ -196,3 +196,5 @@ SIMPLE_JWT = {
     'ROTATE_REFRESH_TOKENS' :True,
     'ACCESS_TOKEN_LIFETIME': timedelta(hours=24),
 }
+
+AUTHENTICATION_BACKENDS = ["user_app.backends.PhoneUsernameEmailAuthenticationBackend"]

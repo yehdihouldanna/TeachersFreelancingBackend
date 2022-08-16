@@ -26,6 +26,11 @@ username = postgres
 password = postgres
 
 
+## Login details : 
+The backend supports login with phone number, username and email,
+any of the three can be sent in the username attribute of the request 
+and the backend will check, if that username is either,
+and authenticate the user accordingly.
 
 ## Resquest example raw data : 
 Creating a teacher on the `localhost:8000/account/register_teacher/` :
@@ -36,7 +41,7 @@ Creating a teacher on the `localhost:8000/account/register_teacher/` :
     "password" : "Color.123",
     "password2" : "Color.123",
     "phone":"12345678",
-    "subjects":{"Math":[],"Physics":[]},
+    "subjects":["Mathématiques","Physique Chimie"],
     "introduction" : "The first teacher registered on the test database.",
     "diploma":null,
     "hourly_wage":"200",
@@ -55,7 +60,22 @@ Creating a student on the `localhost:8000/account/register_student/` :
     "speciality" : null
 }
 ```
-
+example de la reponse : 
+```json
+{
+    "response": "Student registration successful!",
+    "username": "blue_student",
+    "email": "blue_student@example.com",
+    "phone": 92345678,
+    "is_student": true,
+    "classe": "0",
+    "speciality": null,
+    "token": {
+        "refresh": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTY2MDA2OTg0NCwiaWF0IjoxNjU5OTgzNDQ0LCJqdGkiOiIwNjcxMTIyOGI3Mjk0ODlhOTM3MWUyNzM1NjZmY2U5MCIsInVzZXJfaWQiOjEwfQ.Gju9-lru6UTpRtAT_h90EgRK8R2HMm_ULJri8Mc4WSI",
+        "access": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjYwMDY5ODQ0LCJpYXQiOjE2NTk5ODM0NDQsImp0aSI6ImM3NTNlM2MzOTU3NDQ1NjRhZjI1YzBhZGVjODVmNDVhIiwidXNlcl9pZCI6MTB9.RrAcnR8pR0PDlyHqnTmQOFvMwAvdduVSL4xyfdSt3WM"
+    }
+}
+```
 ## Common Errors :
 
 if you encounter any errors while migrating you can delete the database from pgdmin and remove all the previous migration files
