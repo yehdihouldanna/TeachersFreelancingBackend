@@ -190,7 +190,6 @@ REST_FRAMEWORK = {
 }
 
 
-#TODO revert to the classical django Token to make the work easier for the front end.
 
 SIMPLE_JWT = {
     'ROTATE_REFRESH_TOKENS' :True,
