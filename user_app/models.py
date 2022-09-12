@@ -26,7 +26,7 @@ def format_disponitbilites(disps):
 
 CLASSES = (
     ("99",_("any")),
-    ("0", _("Mahdara")),
+    ("0", _("Mahdhara")),
     ("1", _("1AF")),
     ("2", _("2AF")),
     ("3", _("3AF")),
@@ -48,6 +48,18 @@ SPECIALTIES =(
     ("O",_("Sciences_Religieuses")),
     ("T",_("Technique")),
     )
+
+SUBJECTS = (
+    ("0",_("All")),
+    ("1",_("Maths")),
+    ("2",_("Physique Chimie")),
+    ("3",_("Sciences Naturelles")),
+    ("4",_("Arabe")),
+    ("5",_("Français")),
+    ("6",_("Anglais")),
+    ("7",_("Mahdhara")),
+    ("8",_("Autre")),
+)
 
 WALLETS = (("Bankily",_("Bankily")),("Masrvi",_("Masrvi")),("Sedad",_("Sedad")),("SiteSpecific",_("SiteSpecific")))
 
@@ -97,6 +109,7 @@ class Teacher(models.Model):
     diploma = models.FileField(_("diploma"),null=True,blank = True,default=None,upload_to=None,max_length=254,)
     introduction = models.CharField(_("introduction"),max_length= 1000)
     hourly_wage = models.PositiveIntegerField(_("hourly wage"),default = 1000)
+    #TODO change subject to manytomany field to solve the problem of multiple entries (it can solve the problem of multiple subjects)
     subjects = ArrayField(base_field=models.CharField(_("subjects"),max_length=50,blank=True),default=list,null=True)
     disponibilities = models.JSONField(_("disponibilities"),null = True)
     avg_rating = models.IntegerField(_("average rating"),default = 0)
