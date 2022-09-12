@@ -1,6 +1,6 @@
 # from django.contrib.auth.models import User
 from rest_framework import serializers
-from user_app.models import User , Teacher , Student, format_disponitbilites
+from user_app.models import  User , Teacher , Student,Account,Transaction, format_disponitbilites
 from backend.utils.utils import *
 # Create your models here.
 
@@ -61,6 +61,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
             # 'username' : {'required' , False},
         }
     
+    #TODO Create an account on user creation
     def save(self):
         password  = self.validated_data['password']
         password2 = self.validated_data['password2']
@@ -77,14 +78,14 @@ class RegistrationSerializer(serializers.ModelSerializer):
         if User.objects.filter(phone=self.validated_data['phone']).exists():
             raise serializers.ValidationError({'error' : 'phone already taken'})
 
-        account = User(phone=self.validated_data['phone'],email=self.validated_data['email'],username = self.validated_data['username'])
-        account.set_password(password)
-        account.save()
+        user = User(phone=self.validated_data['phone'],email=self.validated_data['email'],username = self.validated_data['username'])
+        user.set_password(password)
+        user.save()
 
-        return account
+        return user
         
 #? when working with serializers you can forget about the *forms* , the serializers offers more flexible ways to receive and form data.
-class TeacherRegistrationSerializer(serializers.ModelSerializer):
+class TeacherRegistrationSerializer(RegistrationSerializer):
     
     phone = serializers.IntegerField(required=True)
     username = serializers.CharField(required=True,max_length=150)
@@ -105,41 +106,27 @@ class TeacherRegistrationSerializer(serializers.ModelSerializer):
         print(f"checked the type of the phone number and it's {type(phone)}")
 
     def save(self):
-        password  = self.validated_data['password']
-        password2 = self.validated_data['password2']
-
-        if password != password2:
-            raise serializers.ValidationError({'error': ' Passwords should match'})
-
-        if User.objects.filter(email=self.validated_data['email']).exists():
-            raise serializers.ValidationError({'error' : 'Email already exists'})
-
-        if User.objects.filter(username=self.validated_data['username']).exists():
-            raise serializers.ValidationError({'error' : 'username already taken'})
-
-        if User.objects.filter(phone=self.validated_data['phone']).exists():
-            raise serializers.ValidationError({'error' : 'phone number already_exist'})
-
-        self.phone_validator(self.validated_data['phone'])
-        account = User(is_teacher=True,email=self.validated_data['email'],username = self.validated_data['username'],phone=self.validated_data['phone'])
-        account.set_password(password)
-        account.save()
-
+        user = super().save()
 
         # formating disponibilities : 
-        
         disponibilities = format_disponitbilites(self.validated_data['disponibilities'])
 
         teacher = Teacher(
-            user = account,diploma=self.validated_data['diploma'],
+            user = user,diploma=self.validated_data['diploma'],
             introduction=self.validated_data['introduction'],
             hourly_wage=self.validated_data['hourly_wage'],
             subjects=self.validated_data['subjects'],
             disponibilities=disponibilities)
 
         teacher.save()
+
+        #* creating an account for the user/teacher
+        account = Account(user = user)
+        account.save()
+        
         return teacher
-class StudentRegistrationSerializer(serializers.ModelSerializer):
+
+class StudentRegistrationSerializer(RegistrationSerializer):
     
     phone = serializers.IntegerField(required=True)
     username = serializers.CharField(required=True,max_length=150)
@@ -160,25 +147,7 @@ class StudentRegistrationSerializer(serializers.ModelSerializer):
         print(f"checked the type of the phone number and it's {type(phone)}")
 
     def save(self):
-        password  = self.validated_data['password']
-        password2 = self.validated_data['password2']
-
-        if password != password2:
-            raise serializers.ValidationError({'error': ' Passwords should match'})
-
-        if User.objects.filter(email=self.validated_data['email']).exists():
-            raise serializers.ValidationError({'error' : 'Email already exists'})
-
-        if User.objects.filter(username=self.validated_data['username']).exists():
-            raise serializers.ValidationError({'error' : 'username already taken'})
-
-        if User.objects.filter(phone=self.validated_data['phone']).exists():
-            raise serializers.ValidationError({'error' : 'phone number already_exist'})
-
-        self.phone_validator(self.validated_data['phone'])
-        account = User(is_student=True,email=self.validated_data['email'],username = self.validated_data['username'],phone=self.validated_data['phone'])
-        account.set_password(password)
-        account.save()
+        account = super().save()
 
         student = Student(
             user = account,classe=self.validated_data['classe'],
@@ -207,3 +176,17 @@ class StudentSerializer(serializers.ModelSerializer):
         model = Student
         fields = '__all__'
     
+
+class AccountSerializer(serializers.ModelSerializer):
+    # transactions = TransactionSerializer(many=True, read_only = True)
+    user = UserSerializer()
+    class Meta : 
+        model = Account
+        fields = '__all__'
+
+class TransactionSerializer(serializers.ModelSerializer):
+    # user = serializers.CharField(source="account.user__username")
+    # account = AccountSerializer()
+    class Meta:
+        model = Transaction
+        fields = '__all__'

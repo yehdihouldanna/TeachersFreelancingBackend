@@ -1,3 +1,5 @@
+import datetime
+from django.utils import timezone
 from django.db import models
 from django.contrib.auth.models import User , AbstractUser
 
@@ -8,18 +10,12 @@ from rest_framework.authtoken.models import Token
 from django.core.validators import RegexValidator
 from django.contrib.postgres.fields import ArrayField
 from django.utils.translation import gettext_lazy as _
+import uuid
 
-# DAYS=("Lundi")),
-#       "Mardi")),
-#       "Mercredi")),
-#       "Jeudi")),
-#       "Vendredi")),
-#       "Samedi")),
-#       "Dimanche")))
 
 DAYS = ("Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi","Dimanche")
 def format_disponitbilites(disps):
-    """Returns a dict containins all days with their respective dipo if any."""
+    """Returns a dict containins all days with their respective disponibilities if any."""
     disponibilities = dict()
     for day in DAYS:
         try:
@@ -30,7 +26,7 @@ def format_disponitbilites(disps):
 
 CLASSES = (
     ("99",_("any")),
-    ("0", _("Mahdara")),
+    ("0", _("Mahdhara")),
     ("1", _("1AF")),
     ("2", _("2AF")),
     ("3", _("3AF")),
@@ -53,38 +49,70 @@ SPECIALTIES =(
     ("T",_("Technique")),
     )
 
+SUBJECTS = (
+    ("0",_("All")),
+    ("1",_("Maths")),
+    ("2",_("Physique Chimie")),
+    ("3",_("Sciences Naturelles")),
+    ("4",_("Arabe")),
+    ("5",_("Français")),
+    ("6",_("Anglais")),
+    ("7",_("Mahdhara")),
+    ("8",_("Autre")),
+)
 
+WALLETS = (("Bankily",_("Bankily")),("Masrvi",_("Masrvi")),("Sedad",_("Sedad")),("SiteSpecific",_("SiteSpecific")))
 
 phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.")
 
 class User(AbstractUser):
     
-    phone = models.CharField(unique=True,validators=[phone_regex], max_length=17, blank=True) 
+    phone = models.CharField(_('phone'),unique=True,validators=[phone_regex], max_length=17, blank=True) 
     is_teacher = models.BooleanField(default=False,blank=True,null=True)
     is_student = models.BooleanField(default=False,blank=True,null=True)
     # USERNAME_FIELD = 'phone'
     REQUIRED_FIELDS = ["phone","email"]
     
+class Account(models.Model):
+    user  = models.OneToOneField(User,on_delete = models.CASCADE,primary_key=True)
+    account_number = models.UUIDField(_('account number'),default = uuid.uuid4, editable=False, unique=True)
+    balance = models.IntegerField(_('balance'),default = 0,null = False)
+    creation_date = models.DateTimeField(_('created at'),auto_now_add=True)
+
+    def update_balance(self,new_amount):
+        self.balance += new_amount
+        self.save()
+
+class Transaction(models.Model):
+    def default_platform_account():
+        return Account.objects.filter(user__username="platform")[0].pk
+    
+    account = models.ForeignKey(Account, on_delete=models.CASCADE,blank=True,related_name="transactions")
+    destination_account =  models.OneToOneField(Account,default = default_platform_account,on_delete=models.CASCADE,blank=True,null=True,related_name="receiving_account") # ? this is only valid if wallet is intransaction
+    amount_MRU = models.IntegerField(_("amount"))
+    phone_number = models.CharField(_("phone"),validators=[phone_regex], max_length=17, blank=True) 
+    txn_id = models.CharField(_("TXN ID"),max_length=50,blank=True) #* This is the TXN ID provided by mobile wallet such as Bankily.
+    wallet = models.CharField(_("Wallet"),max_length=30,choices=WALLETS,default="SiteSpecific")
+    creation_date = models.DateTimeField(_('transaction date'),auto_now_add=True)
+    is_charging = models.BooleanField(_("is_charging_transaction"),default=False) #? if is charging mean
 
 class Student(models.Model):
-
-    #? student related fields
     user  = models.OneToOneField(User,on_delete=models.CASCADE,primary_key=True)
-    classe = models.CharField(max_length=30,null=True,choices=CLASSES)
-    speciality = models.CharField(max_length=30,null=True, blank=True,choices=SPECIALTIES)
+    classe = models.CharField(_("classe"),max_length=30,null=True,choices=CLASSES)
+    speciality = models.CharField(_("specialty"),max_length=30,null=True, blank=True,choices=SPECIALTIES)
 
     def _str_(self):
         return f"STUDENT {self.user.username} | {self.user.phone} | classe : {self.classe + self.speciality}"
 
 class Teacher(models.Model):
-    #?Teacher related fields : 
     user  = models.OneToOneField(User,on_delete=models.CASCADE,primary_key=True)
-    diploma = models.FileField(null=True,blank = True,default=None,upload_to=None,max_length=254,)
-    introduction = models.CharField(max_length= 1000)
-    hourly_wage = models.PositiveIntegerField(default = 1000)
-    subjects = ArrayField(base_field=models.CharField(max_length=50,blank=True),default=list,null=True)
-    disponibilities = models.JSONField(null = True)
-    avg_rating = models.IntegerField(default = 0)
+    diploma = models.FileField(_("diploma"),null=True,blank = True,default=None,upload_to=None,max_length=254,)
+    introduction = models.CharField(_("introduction"),max_length= 1000)
+    hourly_wage = models.PositiveIntegerField(_("hourly wage"),default = 1000)
+    #TODO change subject to manytomany field to solve the problem of multiple entries (it can solve the problem of multiple subjects)
+    subjects = ArrayField(base_field=models.CharField(_("subjects"),max_length=50,blank=True),default=list,null=True)
+    disponibilities = models.JSONField(_("disponibilities"),null = True)
+    avg_rating = models.IntegerField(_("average rating"),default = 0)
 
     def _str_(self):
         return f"TEACHER {self.user.username} | {self.user.phone} | teaches : {self.subjects} | expects {self.hourly_wage}MRU/h"

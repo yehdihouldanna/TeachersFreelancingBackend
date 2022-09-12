@@ -94,7 +94,7 @@ WSGI_APPLICATION = 'teacher_freelance.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'teacher_freelance', 
+        'NAME': 'teacher_freelance_2', 
         'USER': 'postgres', 
         'PASSWORD': 'postgres',
         'HOST': '127.0.0.1', 
@@ -190,7 +190,6 @@ REST_FRAMEWORK = {
 }
 
 
-#TODO revert to the classical django Token to make the work easier for the front end.
 
 SIMPLE_JWT = {
     'ROTATE_REFRESH_TOKENS' :True,

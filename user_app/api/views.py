@@ -6,10 +6,10 @@ from rest_framework import status
 from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework import serializers
-from rest_framework.permissions import IsAuthenticated
-from user_app.api.serializers import TeacherSerializer,StudentSerializer, RegistrationSerializer,UserLoginSerializer,LoginSerializer,TeacherRegistrationSerializer,StudentRegistrationSerializer
-from user_app.models import Teacher,Student
-from user_app.api.permissions import IsTheCurrentUser
+from rest_framework.permissions import IsAuthenticated,IsAdminUser
+from user_app.api.serializers import  TransactionSerializer, TeacherSerializer,StudentSerializer, RegistrationSerializer,UserLoginSerializer,LoginSerializer,TeacherRegistrationSerializer,StudentRegistrationSerializer,AccountSerializer
+from user_app.models import Account, Teacher,Student
+from user_app.api.permissions import IsCurrentUserOrAdmin
 # from rest_framework.authtoken.models import Token
 # from user_app import models
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -141,7 +141,7 @@ def register_student_view(request):
 
 
 class TeacherDetailView(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [IsAuthenticated,IsTheCurrentUser]
+    permission_classes = [IsCurrentUserOrAdmin]
     serializer_class = TeacherSerializer
 
     def get_queryset(self):
@@ -149,7 +149,7 @@ class TeacherDetailView(generics.RetrieveUpdateDestroyAPIView):
         return Teacher.objects.filter(user=user)
 
 class StudentDetailView(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [IsAuthenticated,IsTheCurrentUser]
+    permission_classes = [IsCurrentUserOrAdmin]
     serializer_class = StudentSerializer
 
     def get_queryset(self):
@@ -162,3 +162,29 @@ class TeacherListView(generics.ListAPIView):
 
     queryset = Teacher.objects.all()
     #TODO create custom filters for the teachers based , subjects , and diponibilities
+
+class AccountDetailView(generics.RetrieveAPIView):
+    serializer_class = AccountSerializer
+    permission_classes = [IsCurrentUserOrAdmin] #TODO change the permission class IsTheCurrentUser to IsCurrentUserOrAdmin
+    lookup_field='user__username'
+    def get_queryset(self):
+        user = self.request.user
+        return Account.objects.filter(user=user)
+
+class AccountRechargeView(generics.CreateAPIView):
+    serializer_class = TransactionSerializer
+    permission_classes = [IsCurrentUserOrAdmin]
+
+    # lookup_field='user__username'
+    def perform_create(self,serializer):
+        data = self.request.data
+        user = self.request.user
+        account = Account.objects.get(user=user)
+
+        #TODO This update should be done only after admin validation
+
+        account.update_balance(int(self.request.data['amount_MRU']))
+        serializer.save(account = account, is_charging=True,destination_account=None)
+        data["balance"] = account.balance
+        return Response(data,status=status.HTTP_201_CREATED)
+
