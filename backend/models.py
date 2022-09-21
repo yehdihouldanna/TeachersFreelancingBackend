@@ -1,24 +1,26 @@
 from django.db import models
 # Create your models here.
-from user_app.models import Student,CLASSES,SUBJECTS,phone_regex
+from user_app.models import User,Student,CLASSES,SUBJECTS,phone_regex
 from django.utils.translation import gettext_lazy as _
 import json
 
 class Subject(models.Model):
-    subject = models.CharField(_('subject'),max_length=20,choices=SUBJECTS,primary_key=True)
-
+    name = models.CharField(_('subject'),max_length=25,choices=SUBJECTS,primary_key=True)
+    
     def __str__(self):
-        return self.subject+"::"+dict(SUBJECTS)[str(self.subject)]
+        return self.name
 
 class Order(models.Model):
     title = models.CharField(_('title'),unique=True,max_length=30, blank=True) 
-    student = models.ForeignKey(Student,on_delete=models.CASCADE,related_name="requester")
+    user = models.ForeignKey(User,on_delete=models.CASCADE,related_name="requester")
     description = models.CharField(_('description'),max_length=200,blank=True,null=True)
     adresse = models.CharField(_('adresse'),blank=True,null=True,max_length=100)
 
     def __str__(self):
-        return _("student")+f"{self.student.user.first_name} | {self.student.user.phone} " +_('wants')+f" {self.title}"
-
+        try:
+            return _("user")+f"{self.user.first_name} | {self.user.phone} " +_('wants')+f" {self.title}"
+        except:
+            return "couldn't print order"
 
 class LessonOrder(models.Model):
     order = models.OneToOneField(Order,on_delete=models.CASCADE,primary_key=True)
@@ -33,25 +35,23 @@ class LessonOrder(models.Model):
     #     return json.loads(self.subjects)
 
     def __str__(self):
-        try:
-            return self.order.__str__()
-        except:
-            return "couldn't print LessonOrder"
-
-class DocumentOrder(models.Model):
-    order = models.OneToOneField(Order,on_delete=models.CASCADE,primary_key=True)
-    classe = models.CharField(_("classe"),max_length=30,null=True,choices=CLASSES)
-
-    def __str__(self):
-        try:
-            return self.order.__str__()
-        except:
-            return "couldn't print DocumentOrder"
+        return self.order.__str__()
+        
 
 class Document(models.Model):
     title = models.CharField(_('title'),max_length=50)
     classe = models.CharField(_('classe'),max_length=30,null=True,choices=CLASSES)
     subject = models.ForeignKey(Subject,on_delete=models.CASCADE)
+
+
+class DocumentOrder(models.Model):
+    document = models.OneToOneField(Document,choices = Document.objects.all(),on_delete=models.CASCADE,null=True,blank=True)
+    order = models.OneToOneField(Order,on_delete=models.CASCADE,primary_key=True)
+    classe = models.CharField(_("classe"),max_length=30,null=True,choices=CLASSES)
+
+    def __str__(self):
+        return self.order.__str__()
+
 
 class School(models.Model):
     name = models.CharField(_('name'),max_length=30)

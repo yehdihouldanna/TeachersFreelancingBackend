@@ -2,6 +2,7 @@
 from rest_framework import serializers
 from user_app.models import  User , Teacher , Student,Account,Transaction, format_disponitbilites
 from backend.utils.utils import *
+from django.core.files.base import ContentFile, File
 # Create your models here.
 
 from django.contrib.auth import authenticate
@@ -85,11 +86,11 @@ class RegistrationSerializer(serializers.ModelSerializer):
         return user
         
 #? when working with serializers you can forget about the *forms* , the serializers offers more flexible ways to receive and form data.
-class TeacherRegistrationSerializer(RegistrationSerializer):
-    
-    phone = serializers.IntegerField(required=True)
-    username = serializers.CharField(required=True,max_length=150)
-    email = serializers.EmailField(required=True,max_length=150)
+class TeacherRegistrationSerializer(serializers.ModelSerializer):
+    # user = RegistrationSerializer()
+    phone = serializers.IntegerField(required=False)
+    username = serializers.CharField(required=False,max_length=150)
+    email = serializers.EmailField(required=False,max_length=150)
     
     password = serializers.CharField(style={'input_type':'password'},write_only=True)
     password2 = serializers.CharField(style={'input_type':'password'},write_only=True)
@@ -99,32 +100,36 @@ class TeacherRegistrationSerializer(RegistrationSerializer):
         'hourly_wage','subjects','disponibilities']
         extra_kwargs={
             'password' : {'write_only' : True},
-            # 'username' : {'required' , False}
         }
     
     def phone_validator(self,phone):
         print(f"checked the type of the phone number and it's {type(phone)}")
 
-    def save(self):
-        user = super().save()
 
-        # formating disponibilities : 
-        disponibilities = format_disponitbilites(self.validated_data['disponibilities'])
+    def create(self,validated_data):
+        print("serializer.Create got called")
+        user_data = {}
+        user_data['username'] = validated_data.pop('username')
+        user_data['phone'] = validated_data.pop('phone')
+        user_data['email'] = validated_data.pop('email')
+        user_data['password'] = validated_data.pop('password')
+        user_data['password2'] = validated_data.pop('password2')
+        registration_ser = RegistrationSerializer(data=user_data)
+        if registration_ser.is_valid():
+            user = registration_ser.save()
+            account = Account.objects.create(user=user)
+            account.save()
+            validated_data["disponibilities"] = format_disponitbilites(validated_data.pop("disponibilities"))
+            extension = self.initial_data['diplome'].name.split(".")[-1]
+            diploma = File(self.initial_data['diplome'], name="diploma_"+user_data['username']+"."+extension)
 
-        teacher = Teacher(
-            user = user,diploma=self.validated_data['diploma'],
-            introduction=self.validated_data['introduction'],
-            hourly_wage=self.validated_data['hourly_wage'],
-            subjects=self.validated_data['subjects'],
-            disponibilities=disponibilities)
+            
+            teacher = Teacher.objects.create(user=user,diploma=diploma,**validated_data)
+            teacher.save()
 
-        teacher.save()
+            return teacher
+        raise  serializers.ValidationError(registration_ser.errors)
 
-        #* creating an account for the user/teacher
-        account = Account(user = user)
-        account.save()
-        
-        return teacher
 
 class StudentRegistrationSerializer(RegistrationSerializer):
     

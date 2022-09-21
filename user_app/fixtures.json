@@ -1,0 +1,102 @@
+[
+  {"model": "user_app.user", "pk": 1, 
+  "fields": {"password": "pbkdf2_sha256$260000$F2adp7PLnBhvt1UEhm2JxH$I7m30dttY2uffEqF30/zpboIdtb/Cp2vpdceT/YU9Ec=", 
+             "last_login": null, 
+             "is_superuser": true, 
+             "username": "platform", 
+             "first_name": "", "last_name": "", 
+             "email": "platform@gmail.com", 
+             "is_staff": true, 
+             "is_active": true, 
+             "date_joined": "2022-09-12T19:30:43.004Z", 
+             "phone": "+22299999999", 
+             "is_teacher": false, 
+             "is_student": false, 
+             "groups": [], 
+            "user_permissions": []}},
+  {"model": "user_app.user", "pk": 10, 
+  "fields": {"password": "pbkdf2_sha256$260000$F2adp7PLnBhvt1UEhm2JxH$I7m30dttY2uffEqF30/zpboIdtb/Cp2vpdceT/YU9Ec=", 
+             "last_login": null, 
+             "is_superuser": true, 
+             "username": "teacher_test_color", 
+             "first_name": "teacher", "last_name": "color", 
+             "email": "teacher_test@test.com", 
+             "is_staff": true, 
+             "is_active": true, 
+             "date_joined": "2022-09-12T19:30:43.004Z", 
+             "phone": "+22200000001", 
+             "is_teacher": true, 
+             "is_student": false, 
+             "groups": [], 
+            "user_permissions": []}},
+    {
+      "model": "backend.subject",
+      "pk": 0,
+      "fields": {
+        "name": "All"
+      }
+    },
+    {
+      "model": "backend.subject",
+      "pk": 1,
+      "fields": {
+        "name": "Maths"
+      }
+    },
+    {
+      "model": "backend.subject",
+      "pk": 2,
+      "fields": {
+        "name": "Physique_Chimie"
+      }
+    },
+    {
+      "model": "backend.subject",
+      "pk": 3,
+      "fields": {
+        "name": "Sciences_Naturelles"
+      }
+    },
+    {
+      "model": "backend.subject",
+      "pk": 4,
+      "fields": {
+        "name": "Arabe"
+      }
+    },
+    {
+      "model": "backend.subject",
+      "pk": 5,
+      "fields": {
+        "name": "Français"
+      }
+    },
+    {
+      "model": "backend.subject",
+      "pk": 5,
+      "fields": {
+        "name": "Français"
+      }
+    },
+    {
+      "model": "backend.subject",
+      "pk": 6,
+      "fields": {
+        "name": "Anglais"
+      }
+    },
+    {
+      "model": "backend.subject",
+      "pk": 7,
+      "fields": {
+        "name": "Mahdhara"
+      }
+    },
+    {
+      "model": "backend.subject",
+      "pk": 8,
+      "fields": {
+        "name": "Autre"
+      }
+    }
+  ]

@@ -76,6 +76,53 @@ example de la reponse :
     }
 }
 ```
+
+Example : LessonOrderCreation :
+
+```json
+{
+    "order":
+    {
+        "title" : "Cours math à domicile 4AS",
+        "description":"Blah blah blah",
+        "adresse" : "Nouakchott",
+    },
+    "subject" : [1],
+    "hours" : 2,
+    "unit_price" : 200,
+    "students_count":2
+}
+
+```
+
+## On deploiement setup:
+
+creation of user platform,
+`python manage.py createsuperuser --username "platform" --email "platform@gmail.com" --phone "+22299999999"`
+
+
+or better launch the intial data setup file with :
+`python manage.py loaddata fixtures.json`
+creation of subjects :
+Based on the subjects list
+
+
 ## Common Errors :
 
 if you encounter any errors while migrating you can delete the database from pgdmin and remove all the previous migration files
+
+
+
+
+{
+    "username" : "teacher_blue",
+    "email" : "teacher_blue@example.com",
+    "password" : "Color.123",
+    "password2" : "Color.123",
+    "phone":"10000001",
+    "subjects":["Mathématiques","Physique Chimie"],
+    "introduction" : "a blue teacher",
+    "diploma":null,
+    "hourly_wage":"200",
+    "disponibilities" :{"Lundi":["8","9","16","17","18"],"Mardi":["20","21"]}
+}

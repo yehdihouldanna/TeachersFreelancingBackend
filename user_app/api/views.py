@@ -7,6 +7,7 @@ from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework import serializers
 from rest_framework.permissions import IsAuthenticated,IsAdminUser
+from backend.api.serializers import DocumentSerializer
 from user_app.api.serializers import  TransactionSerializer, TeacherSerializer,StudentSerializer, RegistrationSerializer,UserLoginSerializer,LoginSerializer,TeacherRegistrationSerializer,StudentRegistrationSerializer,AccountSerializer
 from user_app.models import Account, Teacher,Student
 from user_app.api.permissions import IsCurrentUserOrAdmin
@@ -86,35 +87,69 @@ def registration_view(request):
 
         return Response(data,status=status.HTTP_201_CREATED)
 
-@api_view(['POST'])
-def register_teacher_view(request):
-    # We have a json fields in our data so we need to process the data
-    # before passing it to the serializer
-    try:
-        input_data = json.loads(request.body)
-    except:
-        return Response({"message": "ERROR DETECT"})
-        #      use data, not request.data ↓
-    print(input_data)
-    serializer = TeacherRegistrationSerializer(data=input_data)
+
+class TeacherRegistrationView(generics.CreateAPIView):
+    serializer_class = TeacherRegistrationSerializer
+
+   
+    # def perform_create(self,serializer):
+    #     if serializer.is_valid():
+    #         instance = serializer.save()
     
-    data = {}
-    if serializer.is_valid():
-        teacher_data = serializer.save()
-        data['response'] = "Teacher registration successful!"
-        data['username'] = teacher_data.user.username
-        data['email']=teacher_data.user.email
-        data['phone']=teacher_data.user.phone
-        data['is_teacher']=teacher_data.user.is_teacher
-        data['introduction'] =teacher_data.introduction
-        data['hourly_wage'] = teacher_data.hourly_wage
-        data['diploma']=teacher_data.diploma.__repr__()
-        data['token'] = get_tokens_for_user(user=teacher_data.user)
+    def create(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data)
+        data={}
+        if serializer.is_valid():
+            teacher_data = serializer.save()
+            data['response'] = "Teacher registration successful!"
+            data['username'] = teacher_data.user.username
+            data['email']=teacher_data.user.email
+            data['phone']=teacher_data.user.phone
+            data['is_teacher']=teacher_data.user.is_teacher
+            data['introduction'] =teacher_data.introduction
+            data['hourly_wage'] = teacher_data.hourly_wage
+            data['diploma']=teacher_data.diploma.__repr__()
+            data['token'] = get_tokens_for_user(user=teacher_data.user)
 
-    else :
-        data = serializer.errors 
+        else :
+            data = serializer.errors 
 
-    return Response(data,status=status.HTTP_201_CREATED)
+        return Response(data,status=status.HTTP_200_OK)
+        
+
+    
+
+# @api_view(['POST'])
+# def register_teacher_view(request):
+#     # We have a json fields in our data so we need to process the data
+#     # before passing it to the serializer
+#     data = request.body
+#     data = data.pop("displome")
+#     try:
+#         input_data = json.loads(request.body)
+#     except:
+#         return Response({"message": "Internal Error"},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+#         #      use data, not request.data ↓
+#     print(input_data)
+#     serializer = TeacherRegistrationSerializer(data=input_data)
+    
+#     data = {}
+#     if serializer.is_valid():
+#         teacher_data = serializer.save()
+#         data['response'] = "Teacher registration successful!"
+#         data['username'] = teacher_data.user.username
+#         data['email']=teacher_data.user.email
+#         data['phone']=teacher_data.user.phone
+#         data['is_teacher']=teacher_data.user.is_teacher
+#         data['introduction'] =teacher_data.introduction
+#         data['hourly_wage'] = teacher_data.hourly_wage
+#         data['diploma']=teacher_data.diploma.__repr__()
+#         data['token'] = get_tokens_for_user(user=teacher_data.user)
+
+#     else :
+#         data = serializer.errors 
+
+#     return Response(data,status=status.HTTP_201_CREATED)
 
 @api_view(['POST'])
 def register_student_view(request):
