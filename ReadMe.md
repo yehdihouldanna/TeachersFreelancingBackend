@@ -109,7 +109,8 @@ Based on the subjects list
 
 ## Common Errors :
 
-if you encounter any errors while migrating you can delete the database from pgdmin and remove all the previous migration files
+if you encounter any errors while migrating you can delete the database 
+from pgdmin and remove all the previous migration files
 
 
 

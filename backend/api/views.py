@@ -49,3 +49,14 @@ class DocumentView(generics.ListCreateAPIView):
     def perform_create(self,serializer):
         serializer.save()
         return Response(self.request.data,status=status.HTTP_201_CREATED)
+
+class FormationListView(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = FormationSerializer
+
+    queryset = Formation.objects.all()
+
+    def list(self, request):
+        queryset = self.get_queryset()
+        serializer = FormationSerializer(queryset, many=True)
+        return Response(serializer.data)

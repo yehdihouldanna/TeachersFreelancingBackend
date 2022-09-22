@@ -27,19 +27,19 @@ def format_disponitbilites(disps):
 CLASSES = (
     ("99",_("any")),
     ("0", _("Mahdhara")),
-    ("1", _("1AF")),
-    ("2", _("2AF")),
-    ("3", _("3AF")),
-    ("4", _("4AF")),
-    ("5", _("5AF")),
-    ("6", _("6AF")),
-    ("7", _("1AS")),
-    ("8", _("2AS")),
-    ("9", _("3AS")),
-    ("10", _("4AS")),
-    ("11", _("5AS")),
-    ("12", _("6AS")),
-    ("13", _("7AS")),
+    ("1AF",_("1AF")),
+    ("2AF",_("2AF")),
+    ("3AF",_("3AF")),
+    ("4AF",_("4AF")),
+    ("5AF",_("5AF")),
+    ("6AF",_("6AF")),
+    ("1AS",_("1AS")),
+    ("2AS",_("2AS")),
+    ("3AS",_("3AS")),
+    ("4AS",_("4AS")),
+    ("5AS",_("5AS")),
+    ("6AS",_("6AS")),
+    ("7AS",_("7AS")),
 )
 SPECIALTIES =(
     ("A",_("Literature")),
@@ -107,8 +107,8 @@ class Student(models.Model):
 class Teacher(models.Model):
     user  = models.OneToOneField(User,on_delete=models.CASCADE,primary_key=True)
     diploma = models.FileField(_("diploma"),upload_to="./teachers_diplomes",null=True,blank = True,default=None,max_length=254,)
-    introduction = models.CharField(_("introduction"),max_length= 1000)
-    hourly_wage = models.PositiveIntegerField(_("hourly wage"),default = 1000)
+    introduction = models.CharField(_("introduction"),max_length= 1000, null = True,blank=True)
+    hourly_wage = models.PositiveIntegerField(_("hourly wage"),default = 1000 , null=True,blank=True)
     #TODO change subject to manytomany field to solve the problem of multiple entries (it can solve the problem of multiple subjects)
     subjects = ArrayField(base_field=models.CharField(_("subjects"),max_length=50,blank=True),default=list,null=True)
     disponibilities = models.JSONField(_("disponibilities"),null = True)
