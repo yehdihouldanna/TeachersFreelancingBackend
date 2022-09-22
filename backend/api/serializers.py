@@ -44,7 +44,6 @@ class DocumentSerializer(serializers.ModelSerializer):
 
 class DocumentOrderSerializer(serializers.ModelSerializer):
     order = OrderSerializer()
-    document = DocumentSerializer()
 
     class Meta:
         model = DocumentOrder
@@ -56,7 +55,22 @@ class DocumentOrderSerializer(serializers.ModelSerializer):
         user = User.objects.get(username=username)
         order= Order.objects.create(user=user,**order_data)
         order.save()
+
         document_order = DocumentOrder.objects.create(order=order,**validated_data)
 
         return document_order
 
+
+class SchoolSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = School
+        fields = '__all__'
+
+class FormationSerializer(serializers.ModelSerializer):
+    school = SchoolSerializer()
+    class Meta:
+        model = Formation
+        fields = '__all__'
+    
+    

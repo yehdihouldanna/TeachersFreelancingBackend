@@ -11,7 +11,7 @@ class Subject(models.Model):
         return self.name
 
 class Order(models.Model):
-    title = models.CharField(_('title'),unique=True,max_length=30, blank=True) 
+    title = models.CharField(_('title'),max_length=30, blank=True) 
     user = models.ForeignKey(User,on_delete=models.CASCADE,related_name="requester")
     description = models.CharField(_('description'),max_length=200,blank=True,null=True)
     adresse = models.CharField(_('adresse'),blank=True,null=True,max_length=100)
@@ -42,10 +42,14 @@ class Document(models.Model):
     title = models.CharField(_('title'),max_length=50)
     classe = models.CharField(_('classe'),max_length=30,null=True,choices=CLASSES)
     subject = models.ForeignKey(Subject,on_delete=models.CASCADE)
+    file = models.FileField(_("document_file"),upload_to="./document_files",null=True,blank = True,default=None,max_length=254,)
 
 
 class DocumentOrder(models.Model):
-    document = models.OneToOneField(Document,choices = Document.objects.all(),on_delete=models.CASCADE,null=True,blank=True)
+    title = models.CharField(_('title'),max_length=50,null=True, blank = True)
+    classe = models.CharField(_('classe'),max_length=30,null=True,choices=CLASSES)
+    subject = models.ForeignKey(Subject,on_delete=models.CASCADE , null=True,blank=True)
+    # document = models.OneToOneField(Document,choices = Document.objects.all(),on_delete=models.CASCADE,null=True,blank=True)
     order = models.OneToOneField(Order,on_delete=models.CASCADE,primary_key=True)
     classe = models.CharField(_("classe"),max_length=30,null=True,choices=CLASSES)
 
@@ -59,7 +63,7 @@ class School(models.Model):
     phone = models.CharField(_('phone'),unique=True,validators=[phone_regex], max_length=17, blank=True) 
 
 class Formation(models.Model):
-    title =  models.CharField(_('title'),unique=True,max_length=30, blank=True) 
+    title =  models.CharField(_('title'),unique=True,max_length=100, blank=True) 
     school = models.ForeignKey(School,on_delete=models.CASCADE)
     description = models.CharField(_('description'),max_length=200,blank=True,null=True)
     adresse = models.CharField(_('adresse'),blank=True,null=True,max_length=100)

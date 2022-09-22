@@ -11,6 +11,7 @@ from rest_framework.permissions import IsAuthenticated,IsAdminUser
 from backend.api.serializers import *
 from backend.models import *
 from user_app.api.permissions import IsCurrentUserOrAdmin
+from django.shortcuts import get_object_or_404
 
 
 
@@ -26,7 +27,18 @@ class LessonOrderView(generics.ListCreateAPIView):
         serializer.save()
         return Response(self.request.data,status=status.HTTP_201_CREATED)
 
-class DocumentOrderView(generics.ListCreateAPIView):
+class LessonOrderRUDView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsCurrentUserOrAdmin]
+    serializer_class = DocumentOrderSerializer
+    queryset = DocumentOrder.objects.all()
+
+    def delete(self,request,pk):
+        lesson_order = get_object_or_404(LessonOrder,pk=pk)
+        order = lesson_order.order
+        order.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+class DocumentOrderView(generics.ListCreateAPIView, generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsCurrentUserOrAdmin]
     serializer_class = DocumentOrderSerializer
 
@@ -37,6 +49,18 @@ class DocumentOrderView(generics.ListCreateAPIView):
     def perform_create(self,serializer):
         serializer.save()
         return Response(self.request.data,status=status.HTTP_201_CREATED)
+
+class DocumentOrderRUDView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsCurrentUserOrAdmin]
+    serializer_class = DocumentOrderSerializer
+    queryset = DocumentOrder.objects.all()
+
+    def delete(self,request,pk):
+        document_order = get_object_or_404(DocumentOrder,pk=pk)
+        order = document_order.order
+        order.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 class DocumentView(generics.ListCreateAPIView):
     permission_classes = [IsCurrentUserOrAdmin]
@@ -49,3 +73,14 @@ class DocumentView(generics.ListCreateAPIView):
     def perform_create(self,serializer):
         serializer.save()
         return Response(self.request.data,status=status.HTTP_201_CREATED)
+
+class FormationListView(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = FormationSerializer
+
+    queryset = Formation.objects.all()
+
+    def list(self, request):
+        queryset = self.get_queryset()
+        serializer = FormationSerializer(queryset, many=True)
+        return Response(serializer.data)

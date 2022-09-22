@@ -58,7 +58,7 @@ def log_out_view(request):
             return Response(status=status.HTTP_200_OK)
         except : #? the jwt token will stay valid for it's whole duration, to logout the client has to delete its access token from the cache.
             print("Error : Custom Front 0x0001") # u need to delete the jwt acess token from the fronend
-            return Response(status=status.HTTP_200_OK)
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['POST',])
@@ -80,12 +80,13 @@ def registration_view(request):
 
             #? using jwt token
             data['token'] = get_tokens_for_user(user=account)
+            return Response(data,status=status.HTTP_201_CREATED)
 
 
         else :
-            data = serializer.errors 
+            data = serializer.errors
+            return Response(data,status=status.HTTP_400_BAD_REQUEST)
 
-        return Response(data,status=status.HTTP_201_CREATED)
 
 
 class TeacherRegistrationView(generics.CreateAPIView):
@@ -110,11 +111,10 @@ class TeacherRegistrationView(generics.CreateAPIView):
             data['hourly_wage'] = teacher_data.hourly_wage
             data['diploma']=teacher_data.diploma.__repr__()
             data['token'] = get_tokens_for_user(user=teacher_data.user)
-
+            return Response(data,status=status.HTTP_200_OK)
         else :
             data = serializer.errors 
-
-        return Response(data,status=status.HTTP_200_OK)
+            return Response(data,status=status.HTTP_400_BAD_REQUEST)
         
 
     
@@ -168,11 +168,12 @@ def register_student_view(request):
         data['classe'] =student_data.classe
         data['speciality'] = student_data.speciality
         data['token'] = get_tokens_for_user(user=student_data.user)
+        return Response(data,status=status.HTTP_201_CREATED)
 
     else :
-        data = serializer.errors 
+        data = serializer.errors
+        return Response(data,status=status.HTTP_400_BAD_REQUEST)
 
-    return Response(data,status=status.HTTP_201_CREATED)
 
 
 class TeacherDetailView(generics.RetrieveUpdateDestroyAPIView):
