@@ -114,7 +114,6 @@ from pgdmin and remove all the previous migration files
 
 
 
-
 {
     "username" : "teacher_blue",
     "email" : "teacher_blue@example.com",
