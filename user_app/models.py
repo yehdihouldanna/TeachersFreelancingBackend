@@ -50,15 +50,15 @@ SPECIALTIES =(
     )
 
 SUBJECTS = (
-    ("0",_("All")),
-    ("1",_("Maths")),
-    ("2",_("Physique Chimie")),
-    ("3",_("Sciences Naturelles")),
-    ("4",_("Arabe")),
-    ("5",_("Français")),
-    ("6",_("Anglais")),
-    ("7",_("Mahdhara")),
-    ("8",_("Autre")),
+    ("All",_("Tout")),
+    ("Maths",_("Mathématiques")),
+    ("Physics_and_Chemistry",_("Physique Chimie")),
+    ("Natural_Sciences",_("Sciences Naturelles")),
+    ("Arabic",_("Arabe")),
+    ("French",_("Français")),
+    ("English",_("Anglais")),
+    ("Mahdhara",_("Mahdhara")),
+    ("Other",_("Autre")),
 )
 
 WALLETS = (("Bankily",_("Bankily")),("Masrvi",_("Masrvi")),("Sedad",_("Sedad")),("SiteSpecific",_("SiteSpecific")))
@@ -106,7 +106,7 @@ class Student(models.Model):
 
 class Teacher(models.Model):
     user  = models.OneToOneField(User,on_delete=models.CASCADE,primary_key=True)
-    diploma = models.FileField(_("diploma"),null=True,blank = True,default=None,upload_to=None,max_length=254,)
+    diploma = models.FileField(_("diploma"),upload_to="./teachers_diplomes",null=True,blank = True,default=None,max_length=254,)
     introduction = models.CharField(_("introduction"),max_length= 1000)
     hourly_wage = models.PositiveIntegerField(_("hourly wage"),default = 1000)
     #TODO change subject to manytomany field to solve the problem of multiple entries (it can solve the problem of multiple subjects)

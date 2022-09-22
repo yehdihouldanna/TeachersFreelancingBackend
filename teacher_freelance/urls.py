@@ -13,5 +13,5 @@ urlpatterns = [
 
     path('admin/', admin.site.urls),
     path('account/',include('user_app.api.urls')),
-    # path('',include('backend.api.urls')),
+    path('',include('backend.api.urls')),
 ]

@@ -1,7 +1,7 @@
 from django.urls import path, include
 from rest_framework.authtoken.views import obtain_auth_token
-from user_app.api.views import AccountRechargeView, TeacherListView, log_out_view, registration_view,login_view,register_teacher_view,register_student_view
-from user_app.api.views import TeacherDetailView , StudentDetailView,AccountDetailView
+from user_app.api.views import AccountRechargeView, TeacherListView, log_out_view, registration_view,login_view,register_student_view
+from user_app.api.views import TeacherDetailView ,TeacherRegistrationView, StudentDetailView,AccountDetailView
 
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView , TokenVerifyView
 
@@ -12,7 +12,8 @@ urlpatterns = [
     path('login/',login_view,name="login"),
     path('register/',registration_view,name='register'),
     path('logout/',log_out_view, name='logout'),
-    path('register_teacher/',register_teacher_view,name='register_teacher'),
+    # path('register_teacher/',register_teacher_view,name='register_teacher'),
+    path('register_teacher/',TeacherRegistrationView.as_view(),name='register_teacher'),
     path('register_student/',register_student_view,name='register_student'),
 
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
