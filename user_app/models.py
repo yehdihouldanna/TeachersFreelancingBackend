@@ -112,6 +112,7 @@ class Teacher(models.Model):
     #TODO change subject to manytomany field to solve the problem of multiple entries (it can solve the problem of multiple subjects)
     subjects = ArrayField(base_field=models.CharField(_("subjects"),max_length=50,blank=True),default=list,null=True)
     disponibilities = models.JSONField(_("disponibilities"),null = True)
+    validated_account = models.BooleanField("validated_account",default=False)
     avg_rating = models.IntegerField(_("average rating"),default = 0)
 
     def _str_(self):
