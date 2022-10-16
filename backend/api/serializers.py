@@ -1,9 +1,11 @@
 # from django.contrib.auth.models import User
 from rest_framework import serializers
-from backend.models import  Subject, Order, LessonOrder, DocumentOrder , Document, School, Formation
-from user_app.models import User, Student, Teacher ,SUBJECTS
+from backend.models import Document, Order, LessonOrder, BookOrder , Book, School, Formation
+from user_app.models import User, Student, Teacher 
+from backend.models_basic import SUBJECTS,Subject
 from backend.utils.utils import *
 from user_app.api.serializers import StudentSerializer, UserSerializer
+from django.core.files.base import ContentFile, File
 # Create your models here.
 
 
@@ -37,16 +39,38 @@ class LessonOrderSerializer(serializers.ModelSerializer):
         return lesson_order
 
 class DocumentSerializer(serializers.ModelSerializer):
-    
     class Meta:
         model = Document
         fields = '__all__'
 
-class DocumentOrderSerializer(serializers.ModelSerializer):
+    def create(self,validated_data):
+        # username = self.initial_data["uploader"]
+        user =  self.context['request'].user
+        if self.initial_data['file']:
+            extension = self.initial_data['file'].name.split(".")[-1]
+            name=self.validated_data["title"]+'by'+user.username+"."+extension
+            file = File(self.initial_data['file'], name=name)
+        else :
+            file= None
+        try:
+            validated_data.pop("file")
+        except :
+            pass
+        document= Document.objects.create(uploader=user,file=file,**validated_data)
+        document.save()
+        return document
+
+class BookSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Book
+        fields = '__all__'
+
+class BookOrderSerializer(serializers.ModelSerializer):
     order = OrderSerializer()
 
     class Meta:
-        model = DocumentOrder
+        model = BookOrder
         fields = '__all__'
     
     def create(self,validated_data):
@@ -56,9 +80,9 @@ class DocumentOrderSerializer(serializers.ModelSerializer):
         order= Order.objects.create(user=user,**order_data)
         order.save()
 
-        document_order = DocumentOrder.objects.create(order=order,**validated_data)
+        book_order = BookOrder.objects.create(order=order,**validated_data)
 
-        return document_order
+        return book_order
 
 
 class SchoolSerializer(serializers.ModelSerializer):
@@ -72,5 +96,3 @@ class FormationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Formation
         fields = '__all__'
-    
-    

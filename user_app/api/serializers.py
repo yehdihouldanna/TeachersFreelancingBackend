@@ -1,14 +1,20 @@
 # from django.contrib.auth.models import User
+from wsgiref import validate
 from rest_framework import serializers
-from user_app.models import  User , Teacher , Student,Account,Transaction, format_disponitbilites
+from user_app.models import  User , Teacher , Student,Account,Transaction
 from backend.utils.utils import *
 from django.core.files.base import ContentFile, File
+from django.db import transaction
 # Create your models here.
 
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import update_last_login
 from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken
+import os
+from teacher_freelance import settings
+from backend.models_basic import Subject,Classe,Specialty,Disponibility
+from backend.api.serializers_basic import DisponibilitySerializer, SubjectSerializer,ClasseSerializer,SpecialtySerializer
 
 class UserLoginSerializer(serializers.Serializer):
 
@@ -94,10 +100,14 @@ class TeacherRegistrationSerializer(serializers.ModelSerializer):
     
     password = serializers.CharField(style={'input_type':'password'},write_only=True)
     password2 = serializers.CharField(style={'input_type':'password'},write_only=True)
+
+    disponibilities = DisponibilitySerializer(many=True,read_only=True)
+    classes = ClasseSerializer(many=True,read_only=True) 
+    subjects=  SubjectSerializer(many=True,read_only=True) 
     class Meta:
         model = Teacher
         fields = ['username','email','phone','password','password2','diploma','introduction',
-        'hourly_wage','subjects','disponibilities']
+        'hourly_wage','subjects','disponibilities','classes']
         extra_kwargs={
             'password' : {'write_only' : True},
         }
@@ -105,30 +115,90 @@ class TeacherRegistrationSerializer(serializers.ModelSerializer):
     def phone_validator(self,phone):
         print(f"checked the type of the phone number and it's {type(phone)}")
 
-
+    @transaction.atomic
     def create(self,validated_data):
-        print("serializer.Create got called")
-        user_data = {}
-        user_data['username'] = validated_data.pop('username')
-        user_data['phone'] = validated_data.pop('phone')
-        user_data['email'] = validated_data.pop('email')
-        user_data['password'] = validated_data.pop('password')
-        user_data['password2'] = validated_data.pop('password2')
-        registration_ser = RegistrationSerializer(data=user_data)
-        if registration_ser.is_valid():
-            user = registration_ser.save()
-            account = Account.objects.create(user=user)
-            account.save()
-            validated_data["disponibilities"] = format_disponitbilites(validated_data.pop("disponibilities"))
-            extension = self.initial_data['diplome'].name.split(".")[-1]
-            diploma = File(self.initial_data['diplome'], name="diploma_"+user_data['username']+"."+extension)
+        try :
+            with transaction.atomic():
+                user_data = {}
+                user_data['username'] = validated_data.pop('username')
+                user_data['phone'] = validated_data.pop('phone')
+                user_data['email'] = validated_data.pop('email')
+                user_data['password'] = validated_data.pop('password')
+                user_data['password2'] = validated_data.pop('password2')
+                user_data['is_teacher'] = True
+                registration_ser = RegistrationSerializer(data=user_data)
+                if registration_ser.is_valid():
+                    user = registration_ser.save()
+                    user.is_teacher =True
+                    user.save()
+                    account = Account.objects.create(user=user)
+                    account.save()
+                    # validated_data["disponibilities"] = format_disponitbilites(validated_data.pop("disponibilities"))
+                    
+                    if self.initial_data['diploma']:
+                        extension = self.initial_data['diploma'].name.split(".")[-1]
+                        name="diploma_"+user_data['username']+"."+extension
+                        diploma = File(self.initial_data['diploma'], name=name)
+                    else :
+                        diploma= None
+                    try:
+                        validated_data.pop("diploma")
+                    except :
+                        pass
+                    
+                    # subjects = validated_data.pop("subjects")
+                    # disponibilities = validated_data.pop("diponibilities")
+                    # classes = validated_data.pop("classes")
+                    # specialties = validated_data.pop("specialties")
 
-            
-            teacher = Teacher.objects.create(user=user,diploma=diploma,**validated_data)
-            teacher.save()
+                    teacher = Teacher.objects.create(user=user,diploma=diploma,**validated_data)
+                    
+                    
+                    if 'subjects' in self.initial_data.keys():
+                        if type(self.initial_data['subjects'])== str:
+                            self.initial_data['subjects']= self.initial_data['subjects'].split(",")
+                        for suj in self.initial_data['subjects'] :
+                            try :
+                                sujet = Subject.objects.get(pk=suj)
+                                teacher.subjects.add(sujet)
+                            except :
+                                raise serializers.ValidationError({'error': f' Subject "{suj}" does not exist'})
 
-            return teacher
-        raise  serializers.ValidationError(registration_ser.errors)
+                    if 'classes' in self.initial_data.keys():  
+                        if type(self.initial_data['classes'])== str:
+                            self.initial_data['classes']= self.initial_data['classes'].split(",")
+                    
+                        for cl in self.initial_data['classes'] :
+                            try :
+                                cl_ = Classe.objects.get(name=cl)
+                                teacher.classes.add(cl_)
+                            except :
+                                raise serializers.ValidationError({'error': f' Classe "{cl}" does not exist'})
+                    if 'disponibilities' in self.initial_data.keys():
+                        if type(self.initial_data['disponibilities'])== str:  
+                            self.initial_data['disponibilities']= self.initial_data['disponibilities'].split(",") 
+                        for day in self.initial_data['disponibilities'] :
+                            try :
+                                day = Disponibility.objects.get(name=day.title())
+                                teacher.disponibilities.add(day)
+                            except :
+                                raise serializers.ValidationError({'error': f' Day "{day}" does not exist'})
+
+                    if 'specialties' in self.initial_data.keys():
+                        if type(self.initial_data['specialties'])== str:
+                            self.initial_data['specialties']= self.initial_data['specialties'].split(",") 
+                        for speci in self.initial_data['specialties'] :
+                            try :
+                                sp = Specialty.objects.get(name=speci)
+                                teacher.specialties.add(sp)
+                            except :
+                                raise serializers.ValidationError({'error': f' Specialty "{sp}" does not exist'})
+                    teacher.save()
+
+                    return teacher
+                raise  serializers.ValidationError(registration_ser.errors)
+        except  serializers.ValidationError as error:
+            raise serializers.ValidationError(error.args)
 
 
 class StudentRegistrationSerializer(RegistrationSerializer):
@@ -152,12 +222,20 @@ class StudentRegistrationSerializer(RegistrationSerializer):
         print(f"checked the type of the phone number and it's {type(phone)}")
 
     def save(self):
-        account = super().save()
+        user = super().save()
+        user.is_student=True
+        user.save()
 
+        try:
+            classe = self.validated_data['classe']
+        except:
+            classe = None
+        try:
+            speciality = self.validated_data['speciality']
+        except :
+            speciality = None
         student = Student(
-            user = account,classe=self.validated_data['classe'],
-            speciality=self.validated_data['speciality'])
-
+            user = user,classe=classe,speciality=speciality)
         student.save()
         return student
 
@@ -176,7 +254,9 @@ class TeacherSerializer(serializers.ModelSerializer):
 
 
 class StudentSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
+    user_student = UserSerializer()
+    classe = ClasseSerializer()
+    specilaty = SpecialtySerializer()
     class Meta:
         model = Student
         fields = '__all__'

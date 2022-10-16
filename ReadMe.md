@@ -107,6 +107,13 @@ creation of subjects :
 Based on the subjects list
 
 
+**Generate message files for a desired language**
+`python manage.py makemessages -l fr`
+`python manage.py makemessages -l ar`
+ 
+**After adding translations to the .po files, compile the messages**
+python manage.py compilemessages
+
 ## Common Errors :
 
 if you encounter any errors while migrating you can delete the database 

@@ -1,0 +1,395 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-09-28 18:34+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: .\backend\admin.py:16
+msgid "backend"
+msgstr ""
+
+#: .\backend\admin.py:17
+msgid "Orders management"
+msgstr ""
+
+#: .\backend\apps.py:7
+msgid "Orders Management"
+msgstr "Gestion de commandes"
+
+#: .\backend\models.py:8
+msgid "subject"
+msgstr "sujet"
+
+#: .\backend\models.py:11
+#, fuzzy
+#| msgid "subject"
+msgid "Subject"
+msgstr "sujet"
+
+#: .\backend\models.py:12
+#, fuzzy
+#| msgid "subjects"
+msgid "Subjects"
+msgstr "sujets"
+
+#: .\backend\models.py:17 .\backend\models.py:47 .\backend\models.py:57
+#: .\backend\models.py:82
+msgid "title"
+msgstr "titre"
+
+#: .\backend\models.py:19 .\backend\models.py:84
+msgid "description"
+msgstr "description"
+
+#: .\backend\models.py:20 .\backend\models.py:74 .\backend\models.py:85
+msgid "adresse"
+msgstr "adresse"
+
+#: .\backend\models.py:23
+msgid "Order"
+msgstr "Commande"
+
+#: .\backend\models.py:24
+msgid "Orders"
+msgstr "Commandes"
+
+#: .\backend\models.py:35
+msgid "LessonOrder"
+msgstr "Demande de cours"
+
+#: .\backend\models.py:36
+msgid "LessonOrders"
+msgstr "Demandes de cours"
+
+#: .\backend\models.py:48 .\backend\models.py:58 .\backend\models.py:62
+#: .\backend\models.py:87 .\user_app\models.py:116
+msgid "classe"
+msgstr "classe"
+
+#: .\backend\models.py:50
+msgid "document_file"
+msgstr "fichier_document"
+
+#: .\backend\models.py:53
+msgid "Document"
+msgstr "Document"
+
+#: .\backend\models.py:54
+msgid "Documents"
+msgstr "Documents"
+
+#: .\backend\models.py:68
+msgid "DocumentOrder"
+msgstr "Demande de document"
+
+#: .\backend\models.py:69
+msgid "DocumentOrders"
+msgstr "Demande de documents"
+
+#: .\backend\models.py:73
+msgid "name"
+msgstr "nom"
+
+#: .\backend\models.py:75 .\user_app\models.py:70 .\user_app\models.py:102
+msgid "phone"
+msgstr "Tel"
+
+#: .\backend\models.py:78 .\backend\models.py:97
+msgid "School"
+msgstr "Ecole"
+
+#: .\backend\models.py:79
+msgid "Schools"
+msgstr "Ecoles"
+
+#: .\backend\models.py:86
+msgid "teacher name"
+msgstr "nom proffesseur"
+
+#: .\backend\models.py:88
+msgid "start date"
+msgstr "date debut"
+
+#: .\backend\models.py:89
+msgid "end date"
+msgstr "date fin"
+
+#: .\backend\models.py:90
+msgid "time"
+msgstr "temps"
+
+#: .\backend\models.py:93
+msgid "Formation"
+msgstr "Formation"
+
+#: .\backend\models.py:94
+msgid "Formations"
+msgstr "Formations"
+
+#: .\backend\models.py:97
+msgid "organise"
+msgstr "organise"
+
+#: .\backend\models.py:97
+msgid "cours"
+msgstr "cours"
+
+#: .\teacher_freelance\settings.py:45
+msgid "English"
+msgstr "English"
+
+#: .\teacher_freelance\settings.py:46 .\user_app\models.py:58
+msgid "Français"
+msgstr "Français"
+
+#: .\teacher_freelance\settings.py:47
+msgid "عربية"
+msgstr "عربية"
+
+#: .\user_app\admin.py:12
+msgid "SchoolAPP admin panel"
+msgstr "Panneau admin de SchoolApp"
+
+#: .\user_app\admin.py:13
+msgid "School App main page"
+msgstr "La page principale de SchoolAPP"
+
+#: .\user_app\admin.py:14
+msgid "SchoolApp management"
+msgstr "Gestion de SchoolAPP"
+
+#: .\user_app\apps.py:7
+msgid "Users Managment"
+msgstr "Gestion des utilisateurs"
+
+#: .\user_app\models.py:28
+msgid "any"
+msgstr "Non précisé"
+
+#: .\user_app\models.py:29 .\user_app\models.py:60
+msgid "Mahdhara"
+msgstr "Mahdhara"
+
+#: .\user_app\models.py:30
+msgid "1AF"
+msgstr "1AF"
+
+#: .\user_app\models.py:31
+msgid "2AF"
+msgstr "2AF"
+
+#: .\user_app\models.py:32
+msgid "3AF"
+msgstr "3AF"
+
+#: .\user_app\models.py:33
+msgid "4AF"
+msgstr "4AF"
+
+#: .\user_app\models.py:34
+msgid "5AF"
+msgstr "5AF"
+
+#: .\user_app\models.py:35
+msgid "6AF"
+msgstr "6AF"
+
+#: .\user_app\models.py:36
+msgid "1AS"
+msgstr "1AS"
+
+#: .\user_app\models.py:37
+msgid "2AS"
+msgstr "2AS"
+
+#: .\user_app\models.py:38
+msgid "3AS"
+msgstr "3AS"
+
+#: .\user_app\models.py:39
+msgid "4AS"
+msgstr "4AS"
+
+#: .\user_app\models.py:40
+msgid "5AS"
+msgstr "5AS"
+
+#: .\user_app\models.py:41
+msgid "6AS"
+msgstr "6AS"
+
+#: .\user_app\models.py:42
+msgid "7AS"
+msgstr "7AS"
+
+#: .\user_app\models.py:45
+msgid "Literature"
+msgstr "Literature"
+
+#: .\user_app\models.py:46 .\user_app\models.py:54
+msgid "Mathématiques"
+msgstr "Mathématiques"
+
+#: .\user_app\models.py:47
+msgid "Sciences_Naturelles"
+msgstr "Sciences_Naturelles"
+
+#: .\user_app\models.py:48
+msgid "Sciences_Religieuses"
+msgstr "Instruction Islamiques"
+
+#: .\user_app\models.py:49
+msgid "Technique"
+msgstr "Technique"
+
+#: .\user_app\models.py:53
+msgid "Tout"
+msgstr "Tout"
+
+#: .\user_app\models.py:55
+msgid "Physique Chimie"
+msgstr "Physique Chimie"
+
+#: .\user_app\models.py:56
+msgid "Sciences Naturelles"
+msgstr "Sciences Naturelles"
+
+#: .\user_app\models.py:57
+msgid "Arabe"
+msgstr "Arabe"
+
+#: .\user_app\models.py:59
+msgid "Anglais"
+msgstr "Anglais"
+
+#: .\user_app\models.py:61
+msgid "Autre"
+msgstr "Autre"
+
+#: .\user_app\models.py:64
+msgid "Bankily"
+msgstr "Bankily"
+
+#: .\user_app\models.py:64
+msgid "Masrvi"
+msgstr "Masrvi"
+
+#: .\user_app\models.py:64
+msgid "Sedad"
+msgstr "Sedad"
+
+#: .\user_app\models.py:64
+msgid "SiteSpecific"
+msgstr "SpecificAuSite"
+
+#: .\user_app\models.py:82
+msgid "account number"
+msgstr "numéro du compte"
+
+#: .\user_app\models.py:83
+msgid "balance"
+msgstr "solde"
+
+#: .\user_app\models.py:84
+msgid "created at"
+msgstr "date de creation"
+
+#: .\user_app\models.py:87
+msgid "Account"
+msgstr "Compte"
+
+#: .\user_app\models.py:88
+msgid "Accounts"
+msgstr "Comptes"
+
+#: .\user_app\models.py:101
+msgid "amount"
+msgstr "montant"
+
+#: .\user_app\models.py:103
+msgid "TXN ID"
+msgstr "TXN ID"
+
+#: .\user_app\models.py:104
+msgid "Wallet"
+msgstr "Wallet"
+
+#: .\user_app\models.py:105
+msgid "transaction date"
+msgstr "date de transaction"
+
+#: .\user_app\models.py:106
+msgid "is_charging_transaction"
+msgstr "est_chargement"
+
+#: .\user_app\models.py:110
+msgid "Transaction"
+msgstr "Transactions"
+
+#: .\user_app\models.py:111
+msgid "Transactions"
+msgstr "Transactions"
+
+#: .\user_app\models.py:117
+msgid "specialty"
+msgstr "filière"
+
+#: .\user_app\models.py:120
+msgid "Student"
+msgstr "Elève"
+
+#: .\user_app\models.py:121
+msgid "Students"
+msgstr "Elèves"
+
+#: .\user_app\models.py:128
+msgid "diploma"
+msgstr "diplôme"
+
+#: .\user_app\models.py:129
+msgid "introduction"
+msgstr "introduction"
+
+#: .\user_app\models.py:130
+msgid "hourly wage"
+msgstr "salaire horaire"
+
+#: .\user_app\models.py:132
+msgid "subjects"
+msgstr "sujets"
+
+#: .\user_app\models.py:133
+msgid "disponibilities"
+msgstr "disponibilités"
+
+#: .\user_app\models.py:135
+msgid "average rating"
+msgstr "evaluation moyenne"
+
+#: .\user_app\models.py:138
+msgid "Teacher"
+msgstr "Prof"
+
+#: .\user_app\models.py:139
+msgid "Teachers"
+msgstr "Profs"
+
+#~ msgid "user"
+#~ msgstr "utilisateur"
+
+#~ msgid "wants"
+#~ msgstr "veux"
