@@ -10,6 +10,15 @@ from rest_framework import permissions
 
 
 
+class IsTeacher(permissions.BasePermission):
+    def has_object_permission(self, request, view, obj):
+        try :
+            return (obj.user == request.user) or (request.user and request.user.is_teacher)
+        except:
+            pass
+
+        #for the order related objects :
+        return (obj.user == request.user) or (request.user and request.user.is_teacher)
 class IsCurrentUserOrAdmin(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         try :

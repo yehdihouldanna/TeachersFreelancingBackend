@@ -7,7 +7,7 @@ from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework import serializers
 from rest_framework.permissions import IsAuthenticated,IsAdminUser
-from backend.api.serializers import DocumentSerializer
+from backend.api.serializers import BookSerializer
 from user_app.api.serializers import  TransactionSerializer, TeacherSerializer,StudentSerializer, RegistrationSerializer,UserLoginSerializer,LoginSerializer,TeacherRegistrationSerializer,StudentRegistrationSerializer,AccountSerializer
 from user_app.models import Account, Teacher,Student
 from user_app.api.permissions import IsCurrentUserOrAdmin
@@ -165,8 +165,8 @@ def register_student_view(request):
         data['email']=student_data.user.email
         data['phone']=student_data.user.phone
         data['is_student']=student_data.user.is_student
-        data['classe'] =student_data.classe
-        data['speciality'] = student_data.speciality
+        data['classe'] =student_data.classe.name
+        data['speciality'] = student_data.speciality.name
         data['token'] = get_tokens_for_user(user=student_data.user)
         return Response(data,status=status.HTTP_201_CREATED)
 
@@ -184,6 +184,12 @@ class TeacherDetailView(generics.RetrieveUpdateDestroyAPIView):
         user = self.request.user
         return Teacher.objects.filter(user=user)
 
+    # def perform_update(self, serializer):
+    #     instance = serializer.save()
+    #     # send_email_confirmation(user=self.request.user, modified=instance)
+
+    
+
 class StudentDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsCurrentUserOrAdmin]
     serializer_class = StudentSerializer
@@ -196,7 +202,7 @@ class TeacherListView(generics.ListAPIView):
     serializer_class = TeacherSerializer
     permission_classes = [IsAuthenticated]
 
-    queryset = Teacher.objects.all()
+    queryset = Teacher.objects.filter(validated=True)
     #TODO create custom filters for the teachers based , subjects , and diponibilities
 
 class AccountDetailView(generics.RetrieveAPIView):

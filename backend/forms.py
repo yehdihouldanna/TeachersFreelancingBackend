@@ -1,6 +1,6 @@
 from socket import fromshare
 from django import forms 
-from user_app.models import SUBJECTS
+from .models_basic import SUBJECTS
 
 
 class SubjectOrderForm(forms.ModelForm):

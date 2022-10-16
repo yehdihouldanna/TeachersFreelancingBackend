@@ -12,54 +12,7 @@ from django.contrib.postgres.fields import ArrayField
 from django.utils.translation import gettext_lazy as _
 import uuid
 
-
-DAYS = ("Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi","Dimanche")
-def format_disponitbilites(disps):
-    """Returns a dict containins all days with their respective disponibilities if any."""
-    disponibilities = dict()
-    for day in DAYS:
-        try:
-            disponibilities[day] = disps[day]
-        except :
-            disponibilities[day] = []
-    return disponibilities
-
-CLASSES = (
-    ("99",_("any")),
-    ("0", _("Mahdhara")),
-    ("1AF",_("1AF")),
-    ("2AF",_("2AF")),
-    ("3AF",_("3AF")),
-    ("4AF",_("4AF")),
-    ("5AF",_("5AF")),
-    ("6AF",_("6AF")),
-    ("1AS",_("1AS")),
-    ("2AS",_("2AS")),
-    ("3AS",_("3AS")),
-    ("4AS",_("4AS")),
-    ("5AS",_("5AS")),
-    ("6AS",_("6AS")),
-    ("7AS",_("7AS")),
-)
-SPECIALTIES =(
-    ("A",_("Literature")),
-    ("C",_("Mathématiques")),
-    ("D",_("Sciences_Naturelles")),
-    ("O",_("Sciences_Religieuses")),
-    ("T",_("Technique")),
-    )
-
-SUBJECTS = (
-    ("All",_("Tout")),
-    ("Maths",_("Mathématiques")),
-    ("Physics_and_Chemistry",_("Physique Chimie")),
-    ("Natural_Sciences",_("Sciences Naturelles")),
-    ("Arabic",_("Arabe")),
-    ("French",_("Français")),
-    ("English",_("Anglais")),
-    ("Mahdhara",_("Mahdhara")),
-    ("Other",_("Autre")),
-)
+from backend.models_basic import Classe, Specialty, Subject , Disponibility
 
 WALLETS = (("Bankily",_("Bankily")),("Masrvi",_("Masrvi")),("Sedad",_("Sedad")),("SiteSpecific",_("SiteSpecific")))
 
@@ -72,6 +25,10 @@ class User(AbstractUser):
     is_student = models.BooleanField(default=False,blank=True,null=True)
     # USERNAME_FIELD = 'phone'
     REQUIRED_FIELDS = ["phone","email"]
+
+    def _str_(self):
+        nature = "T" if self.is_teacher else "S" if self.is_student else " "
+        return f"[{nature}] : { self.username } : { self.phone } "  
     
 class Account(models.Model):
     user  = models.OneToOneField(User,on_delete = models.CASCADE,primary_key=True)
@@ -79,47 +36,70 @@ class Account(models.Model):
     balance = models.IntegerField(_('balance'),default = 0,null = False)
     creation_date = models.DateTimeField(_('created at'),auto_now_add=True)
 
+    class Meta:
+        verbose_name = _('Account')
+        verbose_name_plural = _('Accounts')
+
     def update_balance(self,new_amount):
         self.balance += new_amount
         self.save()
 
+
 class Transaction(models.Model):
     def default_platform_account():
-        return Account.objects.filter(user__username="platform")[0].pk
+        return Account.objects.get(user__username="platform")
     
     account = models.ForeignKey(Account, on_delete=models.CASCADE,blank=True,related_name="transactions")
     destination_account =  models.OneToOneField(Account,default = default_platform_account,on_delete=models.CASCADE,blank=True,null=True,related_name="receiving_account") # ? this is only valid if wallet is intransaction
     amount_MRU = models.IntegerField(_("amount"))
     phone_number = models.CharField(_("phone"),validators=[phone_regex], max_length=17, blank=True) 
-    txn_id = models.CharField(_("TXN ID"),max_length=50,blank=True) #* This is the TXN ID provided by mobile wallet such as Bankily.
+    txn_id = models.CharField(_("TXN ID"),max_length=50,blank=True,unique=True)
     wallet = models.CharField(_("Wallet"),max_length=30,choices=WALLETS,default="SiteSpecific")
     creation_date = models.DateTimeField(_('transaction date'),auto_now_add=True)
-    is_charging = models.BooleanField(_("is_charging_transaction"),default=False) #? if is charging mean
+    is_charging = models.BooleanField(_("is_charging_transaction"),default=False) 
+
+
+    class Meta:
+        verbose_name = _('Transaction')
+        verbose_name_plural = _('Transactions')
+
 
 class Student(models.Model):
+    #TODO the user should now paye in advance for the course.
+    #TODO the user makes the order, and after it has been aproved and discussed with the admin he can pay.
     user  = models.OneToOneField(User,on_delete=models.CASCADE,primary_key=True)
-    classe = models.CharField(_("classe"),max_length=30,null=True,choices=CLASSES)
-    speciality = models.CharField(_("specialty"),max_length=30,null=True, blank=True,choices=SPECIALTIES)
+    classe = models.ForeignKey(Classe,on_delete=models.CASCADE,null=True,blank = True)
+    speciality =models.ForeignKey(Specialty,on_delete=models.CASCADE,null=True,blank=True)
+    # classe = models.CharField(_("classe"),max_length=30,null=True,choices=CLASSES)
+    # speciality = models.CharField(_("specialty"),max_length=30,null=True, blank=True,choices=SPECIALTIES)
+    class Meta:
+        verbose_name = _('Student')
+        verbose_name_plural = _('Students')
 
     def _str_(self):
         return f"STUDENT {self.user.username} | {self.user.phone} | classe : {self.classe + self.speciality}"
 
 class Teacher(models.Model):
-    user  = models.OneToOneField(User,on_delete=models.CASCADE,primary_key=True)
+    user  = models.OneToOneField(User,on_delete=models.CASCADE,primary_key=True,related_name='user')
     diploma = models.FileField(_("diploma"),upload_to="./teachers_diplomes",null=True,blank = True,default=None,max_length=254,)
     introduction = models.CharField(_("introduction"),max_length= 1000, null = True,blank=True)
     hourly_wage = models.PositiveIntegerField(_("hourly wage"),default = 1000 , null=True,blank=True)
-    #TODO change subject to manytomany field to solve the problem of multiple entries (it can solve the problem of multiple subjects)
-    subjects = ArrayField(base_field=models.CharField(_("subjects"),max_length=50,blank=True),default=list,null=True)
-    disponibilities = models.JSONField(_("disponibilities"),null = True)
+    subjects = models.ManyToManyField(Subject, blank=True)
+    classes = models.ManyToManyField(Classe,blank=True)
+    specialties = models.ManyToManyField(Specialty,blank=True,)
+    disponibilities = models.ManyToManyField(Disponibility,blank=True)
     validated = models.BooleanField("validated",default=False)
     avg_rating = models.IntegerField(_("average rating"),default = 0)
+    count_ratings = models.IntegerField(default=0,null=True,blank=True)
+
+    class Meta:
+        verbose_name = _('Teacher')
+        verbose_name_plural = _('Teachers')
+
+    def update_rating(self,new_rating):
+        self.count_ratings +=1
+        self.avg_rating= (self.avg_rating+new_rating)/self.count_ratings
+        self.save()
 
     def _str_(self):
         return f"TEACHER {self.user.username} | {self.user.phone} | teaches : {self.subjects} | expects {self.hourly_wage}MRU/h"
-
-
-# @receiver(post_save,sender=settings.AUTH_USER_MODEL)
-# def create_auth_token(sender,instance=None,created=False,**kwargs):
-#     if created : 
-#         Token.objects.create(user=instance)

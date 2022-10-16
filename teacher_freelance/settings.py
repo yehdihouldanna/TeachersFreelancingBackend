@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 from pathlib import Path
 from datetime import timedelta
 from .jazzmin_setting import *
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -30,10 +31,26 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
+#TRANSLATION SETTINGS
+LANGUAGE_CODE = 'en-us'  # or other appropriate code
+# LANGUAGE_CODE = 'fr' #default language
+USE_I18N = True
+# USE_L10N = True
+
+LOCALE_PATHS = [os.path.join(BASE_DIR, 'locale')]
+
+from django.utils.translation import activate, gettext_lazy as _
+
+LANGUAGES = [
+    ('en', _('English')),
+    ('fr', _('Français')),
+    ('ar', _('عربية')),
+]
+# activate(LANGUAGE_CODE)
 # Application definition
 
 INSTALLED_APPS = [
-    'jazzmin',
+    # 'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -43,7 +60,7 @@ INSTALLED_APPS = [
     'backend',
     'user_app',
     'rest_framework',
-    'rest_framework.authtoken',
+    # 'rest_framework.authtoken',
     'django_filters',
     'drf_spectacular',
 ]
@@ -58,6 +75,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.locale.LocaleMiddleware', # translation
 ]
 
 ROOT_URLCONF = 'teacher_freelance.urls'
@@ -96,7 +114,7 @@ WSGI_APPLICATION = 'teacher_freelance.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'teacher_freelance', 
+        'NAME': 'teacher_freelance1', 
         'USER': 'postgres', 
         'PASSWORD': 'postgres',
         'HOST': '127.0.0.1', 
@@ -113,7 +131,7 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
     },
-    {
+    { 
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
     },
     {
@@ -142,7 +160,12 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_URL = 'static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
+# STATIC_URL = 'static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
@@ -199,3 +222,7 @@ SIMPLE_JWT = {
 }
 
 AUTHENTICATION_BACKENDS = ["user_app.backends.PhoneUsernameEmailAuthenticationBackend"]
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    #'django.contrib.staticfiles.finders.AppDirectoriesFinder',    #causes verbose duplicate notifications in django 1.9
+)
