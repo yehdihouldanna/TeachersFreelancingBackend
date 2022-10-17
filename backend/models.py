@@ -21,7 +21,7 @@ class LessonOrder(models.Model):
     hours = models.IntegerField(default = 2,blank = True, null =True)
     unit_price = models.IntegerField(default = 200,blank=True,null= True)
     students_count = models.IntegerField(default=1,blank=True,null=True)
-
+    classes = models.ManyToManyField(Classe,blank=True)
     class Meta:
         verbose_name = _('LessonOrder')
         verbose_name_plural = _('LessonOrders')
@@ -53,8 +53,6 @@ class Book(models.Model):
         verbose_name_plural = _('Books')
 
 class BookOrder(models.Model):
-    title = models.CharField(_('title'),max_length=50,null=True, blank = True)
-    description = models.CharField(_('description'),max_length=300,null=True, blank = True)
     order = models.OneToOneField(Order,on_delete=models.CASCADE,primary_key=True)
     classe = models.ForeignKey(Classe,on_delete=models.CASCADE,blank=True,null=True)
     subject = models.ForeignKey(Subject,on_delete=models.CASCADE , null=True,blank=True)

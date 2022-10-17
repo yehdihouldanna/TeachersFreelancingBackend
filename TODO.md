@@ -12,9 +12,9 @@
 - *Liste des profs*
 - *Listes des livres demandables*
 - *Liste des documents (publiques)*
-- Listes des formations ouvertes par les écoles
-- Demande de document
-- Demande de Lesson
+- *Listes des formations ouvertes par les écoles*
+- *Demande de document*
+- *Demande de Lesson*
 - Historique des demandes de documents
 - Historique des demandes de Lessons
 
@@ -30,15 +30,15 @@
 - 
 
 + Fixes
-+ Création class pour sujet
-+ Changement de teacher subject to foreign key
-+ Atomisation de la création des differentes objects
++ *Création class pour sujet*
++ *Changement de teacher subject to foreign key*
++ *Atomisation de la création des differentes objects*
 + Rating on the demand anytime (as a patch the demande CRUD view) :: add rating attribute to the damande
 + Add prof rating based on the average of the ratings of the demnads that relate him.
 + Automatisation de transactions
 + Return only profs with solds > 500 in the list_profs view
-+ Création d'un model pour classe
-+ Création d'un model pour spécialité
++ *Création d'un model pour classe*
++ *Création d'un model pour spécialité*
 
 
 
