@@ -17,10 +17,18 @@ class backend(AppConfig):
     name = _('backend')
     verbose_name = _('Orders management')
 
+class LessonOrderAdmin(admin.ModelAdmin):
+    list_display = ["username","teacher","unit_price","hours","students_count"]
+    def username(self,obj):
+        return obj.order.user.username
+    def teacher(self,obj):
+        return obj.teacher.user.username
+    
+
 
 admin.site.register(Subject,SubjectAdmin)
 admin.site.register(Order)
-admin.site.register(LessonOrder)
+admin.site.register(LessonOrder,LessonOrderAdmin)
 admin.site.register(BookOrder)
 admin.site.register(Book)
 admin.site.register(Document)

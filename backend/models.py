@@ -1,6 +1,6 @@
 from django.db import models
 # Create your models here.
-from user_app.models import User,Student,phone_regex
+from user_app.models import User,Student,Teacher,phone_regex
 from .models_basic import *
 from django.utils.translation import gettext_lazy as _
 
@@ -22,12 +22,13 @@ class LessonOrder(models.Model):
     unit_price = models.IntegerField(default = 200,blank=True,null= True)
     students_count = models.IntegerField(default=1,blank=True,null=True)
     classes = models.ManyToManyField(Classe,blank=True)
+    teacher = models.ForeignKey(Teacher,on_delete=models.CASCADE,null=True,blank=True)
     class Meta:
         verbose_name = _('LessonOrder')
         verbose_name_plural = _('LessonOrders')
 
-    def __str__(self):
-        return self.order.__str__()
+    # def __str__(self):
+    #     return self.order.__str__()
         
 
 class Document(models.Model):

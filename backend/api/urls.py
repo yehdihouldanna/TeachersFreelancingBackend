@@ -12,6 +12,7 @@ urlpatterns = [
     path('list_books/',BookListView.as_view(),name="list_books"),
     path('list_documents/',DocumentListView.as_view(),name="list_documents"),
     path('document_create/',DocumentCreateView.as_view(),name="document_create"),
-    path('document_details/<int:pk>',DocumentRUDView.as_view(),name="document_details"),
-    path('librairy/<int:pk>',LibrairyView.as_view(),name="librairy")
+    path('document_details/<int:pk>/',DocumentRUDView.as_view(),name="document_details"),
+    path('librairy/<int:pk>',LibrairyView.as_view(),name="librairy"),
+    path('teacher_historic/<int:pk>/',LessonOrdersTeacherHistoricView.as_view(),name="teacher_historic")
 ]
