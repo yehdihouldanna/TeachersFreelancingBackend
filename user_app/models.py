@@ -11,7 +11,7 @@ from django.core.validators import RegexValidator
 from django.contrib.postgres.fields import ArrayField
 from django.utils.translation import gettext_lazy as _
 import uuid
-
+from django.db import  transaction
 from backend.models_basic import Classe, Specialty, Subject , Disponibility
 
 WALLETS = (("Bankily",_("Bankily")),("Masrvi",_("Masrvi")),("Sedad",_("Sedad")),("SiteSpecific",_("SiteSpecific")))
@@ -30,6 +30,8 @@ class User(AbstractUser):
         nature = "T" if self.is_teacher else "S" if self.is_student else " "
         return f"[{nature}] : { self.username } : { self.phone } "  
     
+
+
 class Account(models.Model):
     user  = models.OneToOneField(User,on_delete = models.CASCADE,primary_key=True)
     account_number = models.UUIDField(_('account number'),default = uuid.uuid4, editable=False, unique=True)
@@ -43,8 +45,7 @@ class Account(models.Model):
     def update_balance(self,new_amount):
         self.balance += new_amount
         self.save()
-
-
+    
 class Transaction(models.Model):
     def default_platform_account():
         return Account.objects.get(user__username="platform")
@@ -57,11 +58,15 @@ class Transaction(models.Model):
     wallet = models.CharField(_("Wallet"),max_length=30,choices=WALLETS,default="SiteSpecific")
     creation_date = models.DateTimeField(_('transaction date'),auto_now_add=True)
     is_charging = models.BooleanField(_("is_charging_transaction"),default=False) 
-
+    validated = models.BooleanField(_("validated"),default = False)
 
     class Meta:
         verbose_name = _('Transaction')
         verbose_name_plural = _('Transactions')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        can_change = True
 
 
 class Student(models.Model):

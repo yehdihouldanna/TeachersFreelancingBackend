@@ -3,8 +3,9 @@
 - *Login [x]*
 - *Profil, details de compte,*  ,*(chargement de documents)*
 - *Librairie*  
-- Chargement de compte [x]
-- Historique (des demandes affectées à ce prof)
+- Chargement de compte [x] à la validation de la transaction
+- *Historique (des demandes affectées à ce prof)*
+- *Send all user details on login (teacher and student)*
 
 + Student : 
 - *Register*
@@ -17,6 +18,7 @@
 - *Demande de Lesson*
 - Historique des demandes de documents
 - Historique des demandes de Lessons
+- Ajout des ratings pour les demandes
 
 + Admin :
 - *Creation des écoles*
@@ -25,6 +27,7 @@
 - Création d'une transaction de créditation
 - *Création des formations*
 - *Validation des demandes de documents*
+- Clean fields display lists for all models
 
 + Ecole : 
 - 

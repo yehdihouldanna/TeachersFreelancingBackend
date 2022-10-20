@@ -23,10 +23,37 @@ class StudentAdmin(admin.ModelAdmin):
     list_filter = ('classe',)
     # readonly_fields = ["user__username"]
 
+class AccountAdmin(admin.ModelAdmin):
+    list_display= ["account_number","username","balance","phone"]
+    def username(self,obj):
+        return obj.user.username
+    def phone(self,obj):
+        return obj.user.phone
+
+
+
+class TransactionAdmin(admin.ModelAdmin):
+    list_display= ["id","username","amount_MRU","phone_number","txn_id","wallet"]
+    def id(self,obj):
+        return obj.id
+    def username(self,obj):
+        return obj.account.user.username
+
+    # def save_model(self, request, obj, form, change):
+    #     # if 'status' in form.changed_data:
+    #     #     if obj.status != xxx (intial data?) and obj.status == 7:
+    #     #     # do sth
+
+    #     if obj.can_change and obj.validated:
+    #         obj.account.update_balance(obj.amount_MRU)
+    #         obj.can_change=False
+    #     return super().save_model(request, obj, form, change)
+
+
 
 admin.site.unregister(Group)
 admin.site.register(User, UserAdmin)
 admin.site.register(Teacher,TeacherAdmin)
 admin.site.register(Student,StudentAdmin)
-admin.site.register(Account)
-admin.site.register(Transaction)
+admin.site.register(Account,AccountAdmin)
+admin.site.register(Transaction,TransactionAdmin)

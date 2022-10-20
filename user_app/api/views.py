@@ -9,7 +9,7 @@ from rest_framework import serializers
 from rest_framework.permissions import IsAuthenticated,IsAdminUser
 from backend.api.serializers import BookSerializer
 from user_app.api.serializers import  TransactionSerializer, TeacherSerializer,StudentSerializer, RegistrationSerializer,UserLoginSerializer,LoginSerializer,TeacherRegistrationSerializer,StudentRegistrationSerializer,AccountSerializer
-from user_app.models import Account, Teacher,Student
+from user_app.models import Account, Teacher,Student,User
 from user_app.api.permissions import IsCurrentUserOrAdmin
 # from rest_framework.authtoken.models import Token
 # from user_app import models
@@ -32,6 +32,25 @@ def login_view(request):
         serializer.is_valid(raise_exception=True)
         data = serializer.validated_data
         
+        if data['is_teacher']:
+            user = User.objects.get(pk=data['id'])
+            teacher_data = Teacher.objects.get(user=user)
+            data['username'] = teacher_data.user.username
+            data['email']=teacher_data.user.email
+            data['phone']=teacher_data.user.phone
+            data['introduction'] =teacher_data.introduction
+            data['hourly_wage'] = teacher_data.hourly_wage
+            data['diploma']=teacher_data.diploma.__repr__()
+        elif data['is_student']:
+            user = User.objects.get(pk=data['id'])
+            student_data = Student.objects.get(user=user)
+            data['username'] = student_data.user.username
+            data['email']=student_data.user.email
+            data['phone']=student_data.user.phone
+            data['is_student']=student_data.user.is_student
+            data['classe'] =student_data.classe.name
+            data['speciality'] = student_data.speciality.name
+
         return Response(data,status=status.HTTP_200_OK)
         
         
@@ -179,10 +198,11 @@ def register_student_view(request):
 class TeacherDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsCurrentUserOrAdmin]
     serializer_class = TeacherSerializer
-
-    def get_queryset(self):
-        user = self.request.user
-        return Teacher.objects.filter(user=user)
+    queryset = Teacher.objects.all()
+    # def get_queryset(self):
+    #     pk=self.kwargs['pk']
+    #     user = User.objects.get(pk=pk)
+    #     return Teacher.objects.get(user=user)
 
     # def perform_update(self, serializer):
     #     instance = serializer.save()

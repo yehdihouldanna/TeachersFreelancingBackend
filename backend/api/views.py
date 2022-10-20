@@ -17,6 +17,12 @@ from django.shortcuts import get_object_or_404
 
 
 
+class LessonOrdersTeacherHistoricView(generics.ListAPIView):
+    permission_classes = [IsCurrentUserOrAdmin]
+    serializer_class = LessonOrderSerializer
+    queryset = LessonOrder.objects.all()
+    
+
 class LessonOrderView(generics.ListCreateAPIView):
     permission_classes = [IsCurrentUserOrAdmin]
     serializer_class = LessonOrderSerializer
