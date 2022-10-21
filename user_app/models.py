@@ -15,7 +15,7 @@ from django.db import  transaction
 from backend.models_basic import Classe, Specialty, Subject , Disponibility
 
 WALLETS = (("Bankily",_("Bankily")),("Masrvi",_("Masrvi")),("Sedad",_("Sedad")),("SiteSpecific",_("SiteSpecific")))
-
+STATUSES = (("Pending",_("Pending")),("Validated",_("Validated")))
 phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.")
 
 class User(AbstractUser):
@@ -46,6 +46,9 @@ class Account(models.Model):
         self.balance += new_amount
         self.save()
     
+    def __repr__(self):
+        return f"Compte de {self.user.username}"
+    
 class Transaction(models.Model):
     def default_platform_account():
         return Account.objects.get(user__username="platform")
@@ -59,11 +62,12 @@ class Transaction(models.Model):
     creation_date = models.DateTimeField(_('transaction date'),auto_now_add=True)
     is_charging = models.BooleanField(_("is_charging_transaction"),default=False) 
     validated = models.BooleanField(_("validated"),default = False)
-
+    status = models.CharField(_('Status'),max_length=30,choices = STATUSES,default="Pending")
     class Meta:
         verbose_name = _('Transaction')
         verbose_name_plural = _('Transactions')
 
+    can_change = None
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         can_change = True

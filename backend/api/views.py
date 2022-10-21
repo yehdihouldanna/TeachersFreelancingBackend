@@ -17,10 +17,39 @@ from django.shortcuts import get_object_or_404
 
 
 
+
+class BookOrdersStudentHistoricView(generics.ListAPIView):
+    permission_classes = [IsCurrentUserOrAdmin]
+    serializer_class = BookOrderSerializer
+    queryset = BookOrder.objects.all()
+
+    def get(self,request,pk,*args,**kwargs):
+        student = User.objects.get(pk=pk)
+        orders = BookOrder.objects.filter(order__user=student)
+        serializer = BookOrderSerializer(orders,many=True)
+        return Response(serializer.data)
+
+class LessonOrdersStudentHistoricView(generics.ListAPIView):
+    permission_classes = [IsCurrentUserOrAdmin]
+    serializer_class = LessonOrderSerializer
+    queryset = LessonOrder.objects.all()
+
+    def get(self,request,pk,*args,**kwargs):
+        student = User.objects.get(pk=pk)
+        orders = LessonOrder.objects.filter(order__user=student)
+        serializer = LessonOrderSerializer(orders,many=True)
+        return Response(serializer.data)
+
 class LessonOrdersTeacherHistoricView(generics.ListAPIView):
     permission_classes = [IsCurrentUserOrAdmin]
     serializer_class = LessonOrderSerializer
     queryset = LessonOrder.objects.all()
+
+    def get(self,request,pk,*args,**kwargs):
+        teacher = Teacher.objects.get(pk=pk)
+        orders = LessonOrder.objects.filter(teacher=teacher)
+        serializer = LessonOrderSerializer(orders,many=True)
+        return Response(serializer.data)
     
 
 class LessonOrderView(generics.ListCreateAPIView):
@@ -120,3 +149,4 @@ class FormationListView(generics.ListAPIView):
         queryset = self.get_queryset()
         serializer = FormationSerializer(queryset, many=True)
         return Response(serializer.data)
+

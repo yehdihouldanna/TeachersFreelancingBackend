@@ -223,7 +223,13 @@ class TeacherListView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
 
     queryset = Teacher.objects.filter(validated=True)
+    # queryset = Teacher.objects.filter(validated=True,user__account__balance_gte=500)
     #TODO create custom filters for the teachers based , subjects , and diponibilities
+    def get_queryset(self):
+        accounts = Account.objects.filter(balance__gte=500)
+        users = set(acc.user for acc in accounts) 
+        teachers = Teacher.objects.filter(user__in=users)
+        return teachers
 
 class AccountDetailView(generics.RetrieveAPIView):
     serializer_class = AccountSerializer
