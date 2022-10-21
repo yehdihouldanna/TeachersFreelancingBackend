@@ -14,5 +14,7 @@ urlpatterns = [
     path('document_create/',DocumentCreateView.as_view(),name="document_create"),
     path('document_details/<int:pk>/',DocumentRUDView.as_view(),name="document_details"),
     path('librairy/<int:pk>',LibrairyView.as_view(),name="librairy"),
-    path('teacher_historic/<int:pk>/',LessonOrdersTeacherHistoricView.as_view(),name="teacher_historic")
+    path('teacher_historic/<int:pk>/',LessonOrdersTeacherHistoricView.as_view(),name="teacher_historic"),
+    path('student_historic_lesson/<int:pk>/',LessonOrdersStudentHistoricView.as_view(),name="student_historic_lesson"),
+    path('student_historic_book/<int:pk>/',BookOrdersStudentHistoricView.as_view(),name="student_historic_book"),
 ]

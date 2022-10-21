@@ -9,7 +9,6 @@ class Order(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE,related_name="requester")
     description = models.CharField(_('description'),max_length=200,blank=True,null=True)
     adresse = models.CharField(_('adresse'),blank=True,null=True,max_length=100)
-
     class Meta:
         verbose_name = _('Order')
         verbose_name_plural = _('Orders')
@@ -26,10 +25,6 @@ class LessonOrder(models.Model):
     class Meta:
         verbose_name = _('LessonOrder')
         verbose_name_plural = _('LessonOrders')
-
-    # def __str__(self):
-    #     return self.order.__str__()
-        
 
 class Document(models.Model):
     """ This model class is for the public domcuments published by professors"""
@@ -90,6 +85,3 @@ class Formation(models.Model):
     class Meta:
         verbose_name = _('Formation')
         verbose_name_plural = _('Formations')
-
-    def __str__(self):
-        return f"{self.title} | {self.school.name}"

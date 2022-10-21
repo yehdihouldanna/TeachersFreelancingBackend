@@ -3,7 +3,7 @@
 - *Login [x]*
 - *Profil, details de compte,*  ,*(chargement de documents)*
 - *Librairie*  
-- Chargement de compte [x] à la validation de la transaction
+- *Chargement de compte [x] à la validation de la transaction*
 - *Historique (des demandes affectées à ce prof)*
 - *Send all user details on login (teacher and student)*
 
@@ -16,18 +16,18 @@
 - *Listes des formations ouvertes par les écoles*
 - *Demande de document*
 - *Demande de Lesson*
-- Historique des demandes de documents
-- Historique des demandes de Lessons
+- *Historique des demandes de documents*
+- *Historique des demandes de Lessons*
 - Ajout des ratings pour les demandes
 
 + Admin :
 - *Creation des écoles*
 - *Validation des comptes des profs*
-- Validation des transactions 
-- Création d'une transaction de créditation
+- *Validation des transactions*
+- *Création d'une transaction de créditation*
 - *Création des formations*
 - *Validation des demandes de documents*
-- Clean fields display lists for all models
+- *Clean fields display lists for all models*
 
 + Ecole : 
 - 
@@ -38,8 +38,8 @@
 + *Atomisation de la création des differentes objects*
 + Rating on the demand anytime (as a patch the demande CRUD view) :: add rating attribute to the damande
 + Add prof rating based on the average of the ratings of the demnads that relate him.
-+ Automatisation de transactions
-+ Return only profs with solds > 500 in the list_profs view
++ *Automatisation de transactions*
++ *Return only profs with solds > 500 in the list_profs view*
 + *Création d'un model pour classe*
 + *Création d'un model pour spécialité*
 
