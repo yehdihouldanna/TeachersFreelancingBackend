@@ -17,4 +17,6 @@ urlpatterns = [
     path('teacher_historic/<int:pk>/',LessonOrdersTeacherHistoricView.as_view(),name="teacher_historic"),
     path('student_historic_lesson/<int:pk>/',LessonOrdersStudentHistoricView.as_view(),name="student_historic_lesson"),
     path('student_historic_book/<int:pk>/',BookOrdersStudentHistoricView.as_view(),name="student_historic_book"),
+    path('lesson_order/<int:pk>/review-create/',ReviewCreate.as_view(),name='review-create'),
+    path('lesson_order_review/<int:pk>/',ReviewDetail.as_view(),name="review-detail"),
 ]

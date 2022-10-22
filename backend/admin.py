@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin 
-from backend.models import Document, Order,LessonOrder,BookOrder,Book,School,Formation
+from backend.models import Review,Document, Order,LessonOrder,BookOrder,Book,School,Formation
 from backend.models_basic import Subject,Classe,Specialty
 from backend.forms import SubjectOrderForm
 from django.utils.translation import gettext_lazy as _
@@ -47,6 +47,18 @@ class FormationAdmin(admin.ModelAdmin):
     def school(self,obj):
         return obj.school.name
 
+class ReviewAdmin(admin.ModelAdmin):
+    list_display = ["id","student","lesson","teacher","rating_","content","update"]
+    def student(self,obj):
+        return obj.review_user.username
+    def lesson(self,obj):
+        return obj.lesson_order.order.title
+    def teacher(self,obj):
+        return obj.lesson_order.teacher.user.username
+    def rating_(self,obj):
+        r = obj.rating
+        return "★"*int(r) +"☆"*(5-int(r)) 
+
 
 admin.site.register(Subject,SubjectAdmin)
 admin.site.register(Order)
@@ -56,3 +68,4 @@ admin.site.register(Book,BookAdmin)
 admin.site.register(Document,DocumentAdmin)
 admin.site.register(School,SchoolAdmin)
 admin.site.register(Formation,FormationAdmin)
+admin.site.register(Review,ReviewAdmin)

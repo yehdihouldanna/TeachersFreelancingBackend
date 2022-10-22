@@ -112,7 +112,7 @@ Based on the subjects list
 `python manage.py makemessages -l ar`
  
 **After adding translations to the .po files, compile the messages**
-python manage.py compilemessages
+`python manage.py compilemessages`
 
 ## Common Errors :
 

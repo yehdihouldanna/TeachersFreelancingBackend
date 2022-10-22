@@ -8,11 +8,11 @@ from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework import serializers
 from rest_framework.permissions import IsAuthenticated,IsAdminUser
-from user_app.api.permissions import IsCurrentUserOrAdmin,IsTeacher
+from user_app.api.permissions import IsCurrentUserOrAdmin,IsTeacher,IsReviewUserOrReadOnly
 from backend.api.serializers import *
 from backend.api.pagination import *
 from backend.models import *
-
+from rest_framework.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
 
 
@@ -150,3 +150,39 @@ class FormationListView(generics.ListAPIView):
         serializer = FormationSerializer(queryset, many=True)
         return Response(serializer.data)
 
+
+
+# #? a recommended common practice is to have the create(i.e POST) view seperated from the list view (i.e GET).
+class ReviewCreate(generics.CreateAPIView):
+    permission_classes = [IsReviewUserOrReadOnly]
+    serializer_class = ReviewSerializer
+    # throttle_classes = [ReviewCreateThrottle]
+    def get_queryset(self):
+        pk = self.kwargs['pk']
+        return Review.objects.filter(lesson_order=pk)
+
+    def perform_create(self , serializer):
+        pk = self.kwargs.get('pk')
+        lesson = LessonOrder.objects.get(pk=pk)
+
+        user = self.request.user
+        review_queryset = Review.objects.filter(lesson_order=lesson,review_user = user)
+
+        if review_queryset.exists():
+            raise ValidationError("You have already reviewed this order")
+
+        try:
+            teacher = lesson.teacher
+            teacher.update_rating(int(self.request.data['rating']))
+        except:
+            #! when an order doesn't have a teacher, the ratings deosnt update for anybody
+            pass
+        serializer.save(lesson_order = lesson , review_user = user)
+
+        # serializer.save(watchitem = review_queryset , review_user = user)
+
+
+class ReviewDetail(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsReviewUserOrReadOnly]
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializer

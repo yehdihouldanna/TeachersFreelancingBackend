@@ -15,9 +15,14 @@ admin.site.site_title = _('SchoolApp management')
 #     inline_type = 'tabular'
 #     list_filter = ('validated',)
 class TeacherAdmin(admin.ModelAdmin):
-    list_display= ["user","validated","hourly_wage","diploma","avg_rating"]
-    list_filter = ('validated',)
+    list_display= ["user","validated","hourly_wage","rating","diploma"]
+    list_filter = ('validated',"avg_rating")
     # readonly_fields = ["user__username"]
+
+    def rating(self,obj):
+        r = obj.avg_rating
+        return "★"*int(r) +"☆"*(5-int(r)) 
+
 class StudentAdmin(admin.ModelAdmin):
     list_display= ["user","classe","speciality"]
     list_filter = ('classe',)

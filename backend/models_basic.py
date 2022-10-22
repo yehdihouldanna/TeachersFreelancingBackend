@@ -54,7 +54,7 @@ class Specialty(models.Model):
     
     class Meta:
         verbose_name = _('Specialty')
-        verbose_name_plural = _('Specialtys')
+        verbose_name_plural = _('Specialties')
     def __str__(self):
         return self.name
 
