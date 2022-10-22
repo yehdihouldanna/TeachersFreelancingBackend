@@ -1,6 +1,6 @@
 # from django.contrib.auth.models import User
 from rest_framework import serializers
-from backend.models import Document, Order, LessonOrder, BookOrder , Book, School, Formation
+from backend.models import Review,Document, Order, LessonOrder, BookOrder , Book, School, Formation
 from user_app.models import User, Student, Teacher 
 from backend.models_basic import SUBJECTS,Subject
 from backend.api.serializers_basic import *
@@ -170,3 +170,10 @@ class FormationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Formation
         fields = '__all__'
+
+class ReviewSerializer(serializers.ModelSerializer):
+    review_user = serializers.StringRelatedField(read_only=True)
+    class Meta : 
+        model = Review
+        fields= "__all__"
+        exlude=("lesson_order")

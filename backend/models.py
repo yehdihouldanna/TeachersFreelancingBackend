@@ -3,6 +3,8 @@ from django.db import models
 from user_app.models import User,Student,Teacher,phone_regex
 from .models_basic import *
 from django.utils.translation import gettext_lazy as _
+from django.core.validators import MinValueValidator , MaxValueValidator
+
 
 class Order(models.Model):
     title = models.CharField(_('title'),max_length=30, blank=True) 
@@ -72,6 +74,11 @@ class School(models.Model):
         verbose_name = _('School')
         verbose_name_plural = _('Schools')
 
+    def __str__(self):
+        return self.name
+    # def __repr__(self):
+    #     return self.name
+
 class Formation(models.Model):
     title =  models.CharField(_('title'),unique=True,max_length=100, blank=True) 
     school = models.ForeignKey(School,on_delete=models.CASCADE)
@@ -85,3 +92,17 @@ class Formation(models.Model):
     class Meta:
         verbose_name = _('Formation')
         verbose_name_plural = _('Formations')
+
+
+class Review(models.Model):
+    review_user  = models.ForeignKey(User,on_delete=models.CASCADE , blank=False)
+    lesson_order = models.ForeignKey(LessonOrder,on_delete = models.CASCADE,related_name="reviews")
+    rating = models.PositiveIntegerField(validators=[MinValueValidator(1),MaxValueValidator(5)])
+    content = models.CharField(max_length=300,null=True)
+    created = models.DateTimeField(auto_now_add=True)
+    update = models.DateTimeField(auto_now=True)
+    active = models.BooleanField(default =True)
+
+    class Meta:
+        verbose_name = _('Review')
+        verbose_name_plural = _('Reviews')

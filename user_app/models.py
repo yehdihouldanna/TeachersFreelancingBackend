@@ -105,10 +105,13 @@ class Teacher(models.Model):
         verbose_name = _('Teacher')
         verbose_name_plural = _('Teachers')
 
+    def __str__(self):
+        return self.user.username
+
     def update_rating(self,new_rating):
         self.count_ratings +=1
         self.avg_rating= (self.avg_rating+new_rating)/self.count_ratings
         self.save()
-
+    
     def _str_(self):
         return f"TEACHER {self.user.username} | {self.user.phone} | teaches : {self.subjects} | expects {self.hourly_wage}MRU/h"
