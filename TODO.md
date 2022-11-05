@@ -1,8 +1,15 @@
++ Fixes:
+- Add price to book order
+- Student creation atomic
+- Default values for speciality and subject
+- Return subject name (plain) no the primary key
+- Render order creation atomic 
+
 + Teacher :
 - *Register [x] rectify the subject*
 - *Login [x]*
 - *Profil, details de compte,*  ,*(chargement de documents)*
-- *Librairie*  
+- *Librairie* 
 - *Chargement de compte [x] à la validation de la transaction*
 - *Historique (des demandes affectées à ce prof)*
 - *Send all user details on login (teacher and student)*

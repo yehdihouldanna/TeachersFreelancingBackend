@@ -1,7 +1,6 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-
 CLASSES = (
     ("99",_("any")),
     ("0", _("Mahdhara")),
@@ -20,6 +19,7 @@ CLASSES = (
     ("7AS",_("7AS")),
 )
 SPECIALTIES =(
+    ("0",_("Autre")),
     ("A",_("Literature")),
     ("C",_("Mathématiques")),
     ("D",_("Sciences_Naturelles")),

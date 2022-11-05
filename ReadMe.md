@@ -115,12 +115,8 @@ Based on the subjects list
 `python manage.py compilemessages`
 
 ## Common Errors :
-
 if you encounter any errors while migrating you can delete the database 
 from pgdmin and remove all the previous migration files
-
-
-
 {
     "username" : "teacher_blue",
     "email" : "teacher_blue@example.com",
