@@ -114,7 +114,7 @@ WSGI_APPLICATION = 'teacher_freelance.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'teacher_freelance1', 
+        'NAME': 'teacher_freelance', 
         'USER': 'postgres', 
         'PASSWORD': 'postgres',
         'HOST': '127.0.0.1', 
