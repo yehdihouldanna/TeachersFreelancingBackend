@@ -5,7 +5,6 @@ from .models_basic import *
 from django.utils.translation import gettext_lazy as _
 from django.core.validators import MinValueValidator , MaxValueValidator
 
-
 class Order(models.Model):
     title = models.CharField(_('title'),max_length=30, blank=True) 
     user = models.ForeignKey(User,on_delete=models.CASCADE,related_name="requester")
@@ -14,7 +13,6 @@ class Order(models.Model):
     class Meta:
         verbose_name = _('Order')
         verbose_name_plural = _('Orders')
-
 
 class LessonOrder(models.Model):
     order = models.OneToOneField(Order,on_delete=models.CASCADE,primary_key=True)
@@ -45,7 +43,7 @@ class Book(models.Model):
     subject = models.ForeignKey(Subject,on_delete=models.CASCADE)
     # file = models.FileField(_("book_file"),upload_to="./book_files",null=True,blank = True,default=None,max_length=254,)
     author = models.CharField(_("author_name"),max_length = 50,blank=True,null=True)
-
+    price = models.IntegerField(_('price'),null=True,blank=True)
     class Meta:
         verbose_name = _('Book')
         verbose_name_plural = _('Books')
@@ -55,7 +53,6 @@ class BookOrder(models.Model):
     classe = models.ForeignKey(Classe,on_delete=models.CASCADE,blank=True,null=True)
     subject = models.ForeignKey(Subject,on_delete=models.CASCADE , null=True,blank=True)
     books = models.ManyToManyField(Book,blank=True)
-
     
     def __str__(self):
         return self.order.__str__()
