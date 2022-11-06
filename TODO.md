@@ -4,6 +4,7 @@
 - Default values for speciality and subject
 - Return subject name (plain) no the primary key
 - Render order creation atomic 
+- get the username from the request instead (not getting received in the post data)
 
 + Teacher :
 - *Register [x] rectify the subject*
