@@ -1,18 +1,10 @@
-import datetime
-from django.utils import timezone
-from django.db import models
-from django.contrib.auth.models import User , AbstractUser
-
-from django.conf import settings
-from django.db.models.signals import post_save
-from django.dispatch import receiver 
-from rest_framework.authtoken.models import Token
-from django.core.validators import RegexValidator
-from django.contrib.postgres.fields import ArrayField
-from django.utils.translation import gettext_lazy as _
 import uuid
-from django.db import  transaction
-from backend.models_basic import Classe, Specialty, Subject , Disponibility
+from django.contrib.auth.models import AbstractUser, User
+from django.core.validators import RegexValidator
+from django.db import models
+from django.utils.translation import gettext_lazy as _
+
+from backend.models_basic import Classe, Disponibility, Specialty, Subject
 
 WALLETS = (("Bankily",_("Bankily")),("Masrvi",_("Masrvi")),("Sedad",_("Sedad")),("SiteSpecific",_("SiteSpecific")))
 STATUSES = (("Pending",_("Pending")),("Validated",_("Validated")))
@@ -76,11 +68,9 @@ class Transaction(models.Model):
 class Student(models.Model):
     #TODO the user should now paye in advance for the course.
     #TODO the user makes the order, and after it has been aproved and discussed with the admin he can pay.
-    user  = models.OneToOneField(User,on_delete=models.CASCADE,primary_key=True)
+    user  = models.OneToOneField(User,on_delete=models.CASCADE,primary_key=True,related_name='user_student')
     classe = models.ForeignKey(Classe,on_delete=models.CASCADE,null=True,blank = True)
     speciality =models.ForeignKey(Specialty,on_delete=models.CASCADE,null=True,blank=True)
-    # classe = models.CharField(_("classe"),max_length=30,null=True,choices=CLASSES)
-    # speciality = models.CharField(_("specialty"),max_length=30,null=True, blank=True,choices=SPECIALTIES)
     class Meta:
         verbose_name = _('Student')
         verbose_name_plural = _('Students')

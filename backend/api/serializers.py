@@ -1,15 +1,14 @@
 # from django.contrib.auth.models import User
-from rest_framework import serializers
-from backend.models import Review,Document, Order, LessonOrder, BookOrder , Book, School, Formation
-from user_app.models import User, Student, Teacher 
-from backend.models_basic import SUBJECTS,Subject
-from backend.api.serializers_basic import *
-from backend.utils.utils import *
-from user_app.api.serializers import StudentSerializer, UserSerializer
-from django.core.files.base import ContentFile, File
+from django.core.files.base import File
 from django.db import transaction
+from rest_framework import serializers
 
-# Create your models here.
+from backend.api.serializers_basic import *
+from backend.models import (Book, BookOrder, Document, Formation, LessonOrder,
+                            Order, Review, School)
+from backend.models_basic import  Subject
+from backend.utils.utils import *
+from user_app.models import User
 
 
 class OrderSerializer(serializers.ModelSerializer):

@@ -68,6 +68,8 @@ nosetests.xml
 coverage.xml
 
 # Translations
+*.mo
+*.pot
 
 # Sphinx documentation
 docs/_build/
@@ -85,3 +87,7 @@ local_settings.py
 
 .env
 db.sqlite3
+
+#Local documents : 
+document_files/
+teachers_diplomes

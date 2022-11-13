@@ -1,11 +1,10 @@
 from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin 
+from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import Group
-from django_reverse_admin import ReverseModelAdmin
-
-from user_app.models import Account, Transaction, User ,Student,Teacher
 from django.utils.translation import gettext_lazy as _
-from termcolor import cprint
+
+from user_app.models import Account, Student, Teacher, Transaction, User
+
 admin.site.site_header = _("SchoolAPP admin panel")
 admin.site.index_title = _('School App main page')
 admin.site.site_title = _('SchoolApp management')

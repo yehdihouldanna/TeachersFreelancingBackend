@@ -1,10 +1,11 @@
-from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin 
-from backend.models import Review,Document, Order,LessonOrder,BookOrder,Book,School,Formation
-from backend.models_basic import Subject,Classe,Specialty
-from backend.forms import SubjectOrderForm
-from django.utils.translation import gettext_lazy as _
 from django.apps import AppConfig
+from django.contrib import admin
+from django.utils.translation import gettext_lazy as _
+
+from backend.models import (Book, BookOrder, Document, Formation, LessonOrder,
+                            Order, Review, School)
+from backend.models_basic import Classe, Specialty, Subject
+
 
 class backend(AppConfig):
     name = _('backend')
@@ -12,24 +13,31 @@ class backend(AppConfig):
 
 class SubjectAdmin(admin.ModelAdmin):
     list_display= ["name","pk"]
-    form = SubjectOrderForm
+class ClasseAdmin(admin.ModelAdmin):
+    list_display= ["name","pk"]
+class SpecialtyAdmin(admin.ModelAdmin):
+    list_display= ["name","pk"]
 
 
 class LessonOrderAdmin(admin.ModelAdmin):
-    list_display = ["title","username","teacher","unit_price","hours","students_count"]
+    list_display = ["title","username","teacher","unit_price","status","hours","students_count"]
     def title(self,obj):
         return obj.order.title
     def username(self,obj):
         return obj.order.user.username
     def teacher(self,obj):
         return obj.teacher.user.username
+    def status(self,obj):
+        return obj.order.status
 
 class BookOrderAdmin(admin.ModelAdmin):
-    list_display = ["title","username","classe","subject"]
+    list_display = ["title","username","classe","subject","status"]
     def title(self,obj):
         return obj.order.title
     def username(self,obj):
         return obj.order.user.username
+    def status(self,obj):
+        return obj.order.status
 
 class BookAdmin(admin.ModelAdmin):
     list_display = ["title","classe","subject","author"]
@@ -61,6 +69,9 @@ class ReviewAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Subject,SubjectAdmin)
+admin.site.register(Classe,ClasseAdmin)
+admin.site.register(Specialty,SpecialtyAdmin)
+
 admin.site.register(Order)
 admin.site.register(LessonOrder,LessonOrderAdmin)
 admin.site.register(BookOrder,BookOrderAdmin)

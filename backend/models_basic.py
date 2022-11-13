@@ -2,8 +2,8 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 CLASSES = (
-    ("99",_("any")),
-    ("0", _("Mahdhara")),
+    ("Tout",_("Tout")),
+    ("Mahdhara", _("Mahdhara")),
     ("1AF",_("1AF")),
     ("2AF",_("2AF")),
     ("3AF",_("3AF")),
@@ -19,7 +19,7 @@ CLASSES = (
     ("7AS",_("7AS")),
 )
 SPECIALTIES =(
-    ("0",_("Autre")),
+    ("Autre",_("Autre")),
     ("A",_("Literature")),
     ("C",_("Mathématiques")),
     ("D",_("Sciences_Naturelles")),
@@ -27,16 +27,28 @@ SPECIALTIES =(
     ("T",_("Technique")),
     )
 
+# SUBJECTS = (
+#     ("All",_("Tout")),
+#     ("Mathematics",_("Mathématiques")),
+#     ("Physics and Chemistry",_("Physique Chimie")),
+#     ("Natural Sciences",_("Sciences Naturelles")),
+#     ("Arabic",_("Arabe")),
+#     ("French",_("Français")),
+#     ("English",_("Anglais")),
+#     ("Mahdhara",_("Mahdhara")),
+#     ("Other",_("Autre")),
+# )
+
 SUBJECTS = (
-    ("All",_("Tout")),
-    ("Maths",_("Mathématiques")),
-    ("Physics_and_Chemistry",_("Physique Chimie")),
-    ("Natural_Sciences",_("Sciences Naturelles")),
-    ("Arabic",_("Arabe")),
-    ("French",_("Français")),
-    ("English",_("Anglais")),
+    ("Tout",_("All")),
+    ("Mathématiques",_("Mathematics")),
+    ("Physique Chimie",_("Physics and Chemistry")),
+    ("Sciences Naturelles",_("Natural Sciences")),
+    ("Arabe",_("Arabic")),
+    ("Français",_("French")),
+    ("Anglais",_("English")),
     ("Mahdhara",_("Mahdhara")),
-    ("Other",_("Autre")),
+    ("Autre",_("Other")),
 )
 
 DAYS =(

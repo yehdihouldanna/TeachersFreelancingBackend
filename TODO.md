@@ -1,10 +1,18 @@
 + Fixes:
-- Add price to book order
-- Student creation atomic
-- Default values for speciality and subject
-- Return subject name (plain) no the primary key
-- Render order creation atomic 
-- get the username from the request instead (not getting received in the post data)
+- *Add price to book order*
+- *Student creation atomic*
+- *Default values for speciality and subject*
+- *Return subject name (plain) not the primary key*
+- *Render order creation atomic*
+- Fix transaction adds the double sum on validation (is it getting validated twice)
+- Fix Edition(RUD) de demande lesson
+
+
+
+- *register teacher return id , add firstname field*
+- *return status in the order serializer*
+- *rename subjects an classes names*
+
 
 + Teacher :
 - *Register [x] rectify the subject*

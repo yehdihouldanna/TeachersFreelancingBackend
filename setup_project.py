@@ -1,6 +1,6 @@
 #? This is the setup file for the project after all the installations 
 # execute this file using django shell :
-#       $ python manage.py shell`
+#       $ python manage.py shell
 #       >>> exec(open("setup_project.py").read())
 #
 
@@ -9,6 +9,7 @@ from user_app.models import Account, User
 from termcolor import cprint
 
 print("Creating the 'platform' base user ... ",end=" ")
+
 try :
     User.objects.create_superuser(username = 'platform',email= 'platform@gmail.com' ,phone =  '+22299999999', password ='platform')
     cprint("OK !",color="green",attrs=["bold"])
@@ -57,6 +58,3 @@ for day in DAYS :
     except :
         cprint("SKIPPED" , color= "blue",attrs=["bold"], end = " ")
         print(" already exist !")
-
-    # exec(compile(open("setup_project.py", "rb").read(),"setup_project.py", 'exec'), globals, locals)
-    # exec(open("setup_project.py").read())
