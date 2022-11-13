@@ -62,10 +62,9 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['phone','username','email','password','password2']
+        fields = ['phone','username','first_name','email','password','password2']
         extra_kwargs={
             'password' : {'write_only' : True},
-            # 'username' : {'required' , False},
         }
     
     #TODO Create an account on user creation
@@ -85,7 +84,11 @@ class RegistrationSerializer(serializers.ModelSerializer):
         if User.objects.filter(phone=self.validated_data['phone']).exists():
             raise serializers.ValidationError({'error' : 'phone already taken'})
 
-        user = User(phone=self.validated_data['phone'],email=self.validated_data['email'],username = self.validated_data['username'])
+        try : 
+            first_name = self.validated_data['first_name']
+        except:
+            first_name = ""
+        user = User(phone=self.validated_data['phone'],email=self.validated_data['email'],username = self.validated_data['username'],first_name=first_name)
         user.set_password(password)
         user.save()
 
@@ -97,6 +100,7 @@ class TeacherRegistrationSerializer(serializers.ModelSerializer):
     phone = serializers.IntegerField(required=False)
     username = serializers.CharField(required=False,max_length=150)
     email = serializers.EmailField(required=False,max_length=150)
+    first_name = serializers.CharField(required=False,max_length=150)
     
     password = serializers.CharField(style={'input_type':'password'},write_only=True)
     password2 = serializers.CharField(style={'input_type':'password'},write_only=True)
@@ -107,7 +111,7 @@ class TeacherRegistrationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Teacher
         fields = ['username','email','phone','password','password2','diploma','introduction',
-        'hourly_wage','subjects','disponibilities','classes']
+        'hourly_wage','subjects','disponibilities','classes','first_name']
         extra_kwargs={
             'password' : {'write_only' : True},
         }
@@ -121,6 +125,10 @@ class TeacherRegistrationSerializer(serializers.ModelSerializer):
             with transaction.atomic():
                 user_data = {}
                 user_data['username'] = validated_data.pop('username')
+                try:
+                    user_data['first_name'] = validated_data.pop('first_name')
+                except:
+                    user_data['first_name'] = ""
                 user_data['phone'] = validated_data.pop('phone')
                 user_data['email'] = validated_data.pop('email')
                 user_data['password'] = validated_data.pop('password')
@@ -157,9 +165,10 @@ class TeacherRegistrationSerializer(serializers.ModelSerializer):
                     if 'subjects' in self.initial_data.keys():
                         if type(self.initial_data['subjects'])== str:
                             self.initial_data['subjects']= self.initial_data['subjects'].split(",")
+                        
                         for suj in self.initial_data['subjects'] :
                             try :
-                                sujet = Subject.objects.get(pk=suj)
+                                sujet = Subject.objects.get(name=suj)
                                 teacher.subjects.add(sujet)
                             except :
                                 raise serializers.ValidationError({'error': f' Subject "{suj}" does not exist'})
@@ -221,23 +230,28 @@ class StudentRegistrationSerializer(RegistrationSerializer):
     def phone_validator(self,phone):
         print(f"checked the type of the phone number and it's {type(phone)}")
 
+    @transaction.atomic
     def save(self):
-        user = super().save()
-        user.is_student=True
-        user.save()
+        try :
+            with transaction.atomic():
+                user = super().save()
+                user.is_student=True
+                user.save()
 
-        try:
-            classe = self.validated_data['classe']
-        except:
-            classe = None
-        try:
-            speciality = self.validated_data['speciality']
-        except :
-            speciality = None
-        student = Student(
-            user = user,classe=classe,speciality=speciality)
-        student.save()
-        return student
+                try:
+                    classe = self.validated_data['classe']
+                except:
+                    classe = None
+                try:
+                    speciality = self.validated_data['speciality']
+                except :
+                    speciality = None
+                student = Student(
+                    user = user,classe=classe,speciality=speciality)
+                student.save()
+                return student
+        except  serializers.ValidationError as error:
+            raise serializers.ValidationError(error.args)
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -254,12 +268,11 @@ class TeacherSerializer(serializers.ModelSerializer):
 
 
 class StudentSerializer(serializers.ModelSerializer):
-    user_student = UserSerializer()
-    classe = ClasseSerializer()
-    specilaty = SpecialtySerializer()
+    user = UserSerializer()
     class Meta:
         model = Student
         fields = '__all__'
+        extra_kwargs = {"user" : {'required' : False}}
     
 
 class AccountSerializer(serializers.ModelSerializer):

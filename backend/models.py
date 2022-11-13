@@ -5,11 +5,14 @@ from .models_basic import *
 from django.utils.translation import gettext_lazy as _
 from django.core.validators import MinValueValidator , MaxValueValidator
 
+ORDER_STATUSES = (("Pending",_("Pending")),("On going",_("On going")),("Completed",_("Completed")))
+
 class Order(models.Model):
     title = models.CharField(_('title'),max_length=30, blank=True) 
     user = models.ForeignKey(User,on_delete=models.CASCADE,related_name="requester")
     description = models.CharField(_('description'),max_length=200,blank=True,null=True)
     adresse = models.CharField(_('adresse'),blank=True,null=True,max_length=100)
+    status = models.CharField(_('status'),max_length = 30,default="Pending",blank=True,choices=ORDER_STATUSES)
     class Meta:
         verbose_name = _('Order')
         verbose_name_plural = _('Orders')

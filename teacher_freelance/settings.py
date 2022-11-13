@@ -10,10 +10,11 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
-from pathlib import Path
-from datetime import timedelta
-from .jazzmin_setting import *
 import os
+from datetime import timedelta
+from pathlib import Path
+
+from .jazzmin_setting import *
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -39,7 +40,8 @@ USE_I18N = True
 
 LOCALE_PATHS = [os.path.join(BASE_DIR, 'locale')]
 
-from django.utils.translation import activate, gettext_lazy as _
+from django.utils.translation import activate
+from django.utils.translation import gettext_lazy as _
 
 LANGUAGES = [
     ('en', _('English')),

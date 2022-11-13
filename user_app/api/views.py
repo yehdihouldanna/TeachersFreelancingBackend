@@ -1,21 +1,19 @@
 
-from django.shortcuts import render
+from rest_framework import generics, status
 from rest_framework.decorators import api_view
+from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
-from rest_framework import status
-from rest_framework import generics
-from rest_framework.views import APIView
-from rest_framework import serializers
-from rest_framework.permissions import IsAuthenticated,IsAdminUser
-from backend.api.serializers import BookSerializer
-from user_app.api.serializers import  TransactionSerializer, TeacherSerializer,StudentSerializer, RegistrationSerializer,UserLoginSerializer,LoginSerializer,TeacherRegistrationSerializer,StudentRegistrationSerializer,AccountSerializer
-from user_app.models import Account, Teacher,Student,User
-from user_app.api.permissions import IsCurrentUserOrAdmin
-# from rest_framework.authtoken.models import Token
-# from user_app import models
 from rest_framework_simplejwt.tokens import RefreshToken
-from django.contrib.auth import authenticate
-import json
+from user_app.api.permissions import IsCurrentUserOrAdmin
+from user_app.api.serializers import (AccountSerializer, LoginSerializer,
+                                      RegistrationSerializer,
+                                      StudentRegistrationSerializer,
+                                      StudentSerializer,
+                                      TeacherRegistrationSerializer,
+                                      TeacherSerializer, TransactionSerializer,
+                                      UserLoginSerializer)
+from user_app.models import Account, Student, Teacher, User
+
 
 def get_tokens_for_user(user):
     refresh = RefreshToken.for_user(user)
@@ -52,22 +50,6 @@ def login_view(request):
             data['speciality'] = student_data.speciality.name
 
         return Response(data,status=status.HTTP_200_OK)
-        
-        
-        # if serializer.is_valid():
-        #     account = serializer.save()
-
-        #     data['response'] = "Registration Successful!"
-        #     data['username'] = account.username
-        #     data['email'] = account.email
-
-        # user = authenticate(username=request.data['username'], password=request.data['password']) # check for email and password
-        # if not user : #or user.phone_number !=data['phone_number']: #check for phone number
-        #     raise serializers.ValidationError({"detail":"Incorrect email, phone or password"})
-        # response = get_tokens_for_user(user)
-        # return Response(response,status=status.HTTP_200_OK)
-
-
 
 @api_view(['POST',])
 def log_out_view(request):
@@ -79,7 +61,6 @@ def log_out_view(request):
             print("Error : Custom Front 0x0001") # u need to delete the jwt acess token from the fronend
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
-
 @api_view(['POST',])
 def registration_view(request):
     if request.method=='POST':
@@ -87,31 +68,22 @@ def registration_view(request):
 
         data = {}
         if serializer.is_valid():
-            account = serializer.save()
-
+            user = serializer.save()
             data['response'] = "Registration Successful!"
-            data['username'] = account.username
-            data['email'] = account.email
-            data['phone'] = account.phone
-
-            # token = Token.objects.get(user=account).key
-            # data['token'] = token
-
+            data['username'] = user.username
+            data['first_name'] = user.first_name
+            data['email'] = user.email
+            data['phone'] = user.phone
             #? using jwt token
-            data['token'] = get_tokens_for_user(user=account)
+            data['token'] = get_tokens_for_user(user=user)
             return Response(data,status=status.HTTP_201_CREATED)
-
-
         else :
             data = serializer.errors
             return Response(data,status=status.HTTP_400_BAD_REQUEST)
 
-
-
 class TeacherRegistrationView(generics.CreateAPIView):
     serializer_class = TeacherRegistrationSerializer
 
-   
     # def perform_create(self,serializer):
     #     if serializer.is_valid():
     #         instance = serializer.save()
@@ -122,6 +94,8 @@ class TeacherRegistrationView(generics.CreateAPIView):
         if serializer.is_valid():
             teacher_data = serializer.save()
             data['response'] = "Teacher registration successful!"
+            data['id']= teacher_data.user.pk
+            data['first_name']= teacher_data.user.first_name
             data['username'] = teacher_data.user.username
             data['email']=teacher_data.user.email
             data['phone']=teacher_data.user.phone
@@ -135,46 +109,9 @@ class TeacherRegistrationView(generics.CreateAPIView):
             data = serializer.errors 
             return Response(data,status=status.HTTP_400_BAD_REQUEST)
         
-
-    
-
-# @api_view(['POST'])
-# def register_teacher_view(request):
-#     # We have a json fields in our data so we need to process the data
-#     # before passing it to the serializer
-#     data = request.body
-#     data = data.pop("displome")
-#     try:
-#         input_data = json.loads(request.body)
-#     except:
-#         return Response({"message": "Internal Error"},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-#         #      use data, not request.data ↓
-#     print(input_data)
-#     serializer = TeacherRegistrationSerializer(data=input_data)
-    
-#     data = {}
-#     if serializer.is_valid():
-#         teacher_data = serializer.save()
-#         data['response'] = "Teacher registration successful!"
-#         data['username'] = teacher_data.user.username
-#         data['email']=teacher_data.user.email
-#         data['phone']=teacher_data.user.phone
-#         data['is_teacher']=teacher_data.user.is_teacher
-#         data['introduction'] =teacher_data.introduction
-#         data['hourly_wage'] = teacher_data.hourly_wage
-#         data['diploma']=teacher_data.diploma.__repr__()
-#         data['token'] = get_tokens_for_user(user=teacher_data.user)
-
-#     else :
-#         data = serializer.errors 
-
-#     return Response(data,status=status.HTTP_201_CREATED)
-
 @api_view(['POST'])
 def register_student_view(request):
-   
     serializer = StudentRegistrationSerializer(data=request.data)
-    
     data = {}
     if serializer.is_valid():
         student_data = serializer.save()
@@ -193,8 +130,6 @@ def register_student_view(request):
         data = serializer.errors
         return Response(data,status=status.HTTP_400_BAD_REQUEST)
 
-
-
 class TeacherDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsCurrentUserOrAdmin]
     serializer_class = TeacherSerializer
@@ -208,20 +143,17 @@ class TeacherDetailView(generics.RetrieveUpdateDestroyAPIView):
     #     instance = serializer.save()
     #     # send_email_confirmation(user=self.request.user, modified=instance)
 
-    
-
 class StudentDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsCurrentUserOrAdmin]
     serializer_class = StudentSerializer
-
-    def get_queryset(self):
-        user = self.request.user
-        return Student.objects.filter(user=user)
+    queryset = Student.objects.all()
+    # def get_queryset(self):
+    #     user = self.request.user
+    #     return Student.objects.filter(user=user)
 
 class TeacherListView(generics.ListAPIView):
     serializer_class = TeacherSerializer
     permission_classes = [IsAuthenticated]
-
     queryset = Teacher.objects.filter(validated=True)
     # queryset = Teacher.objects.filter(validated=True,user__account__balance_gte=500)
     #TODO create custom filters for the teachers based , subjects , and diponibilities
@@ -255,4 +187,3 @@ class AccountRechargeView(generics.CreateAPIView):
         serializer.save(account = account, is_charging=True,destination_account=None)
         data["balance"] = account.balance
         return Response(data,status=status.HTTP_201_CREATED)
-
