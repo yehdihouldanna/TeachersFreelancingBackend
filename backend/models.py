@@ -96,7 +96,8 @@ class Formation(models.Model):
 
 class Review(models.Model):
     review_user  = models.ForeignKey(User,on_delete=models.CASCADE , blank=False)
-    lesson_order = models.ForeignKey(LessonOrder,on_delete = models.CASCADE,related_name="reviews")
+    # lesson_order = models.ForeignKey(LessonOrder,on_delete = models.CASCADE,related_name="reviews")
+    teacher = models.ForeignKey(Teacher,on_delete = models.CASCADE,related_name="reviews")
     rating = models.PositiveIntegerField(validators=[MinValueValidator(1),MaxValueValidator(5)])
     content = models.CharField(max_length=300,null=True)
     created = models.DateTimeField(auto_now_add=True)

@@ -3,7 +3,7 @@ from django.contrib.auth.models import AbstractUser, User
 from django.core.validators import RegexValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-
+from rest_framework.authtoken.models import Token
 from backend.models_basic import Classe, Disponibility, Specialty, Subject
 
 WALLETS = (("Bankily",_("Bankily")),("Masrvi",_("Masrvi")),("Sedad",_("Sedad")),("SiteSpecific",_("SiteSpecific")))

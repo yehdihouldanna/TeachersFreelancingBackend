@@ -163,21 +163,25 @@ class ReviewCreate(generics.CreateAPIView):
 
     def perform_create(self , serializer):
         pk = self.kwargs.get('pk')
-        lesson = LessonOrder.objects.get(pk=pk)
+        # lesson = LessonOrder.objects.get(pk=pk)
+        teacher = Teacher.objects.get(pk=pk)
 
         user = self.request.user
-        review_queryset = Review.objects.filter(lesson_order=lesson,review_user = user)
+        # review_queryset = Review.objects.filter(lesson_order=lesson,review_user = user)
+        review_queryset = Review.objects.filter(teacher=teacher,review_user = user)
 
         if review_queryset.exists():
-            raise ValidationError("You have already reviewed this order")
+            # raise ValidationError("You have already reviewed this order")
+            raise ValidationError("You have already reviewed this teacher")
 
-        try:
-            teacher = lesson.teacher
-            teacher.update_rating(int(self.request.data['rating']))
-        except:
-            #! when an order doesn't have a teacher, the ratings deosnt update for anybody
-            pass
-        serializer.save(lesson_order = lesson , review_user = user)
+        # try:
+        #     teacher = lesson.teacher
+        #     teacher.update_rating(int(self.request.data['rating']))
+        # except:
+        #     #! when an order doesn't have a teacher, the ratings deosnt update for anybody
+        #     pass
+        # serializer.save(lesson_order = lesson , review_user = user)
+        serializer.save(teacher= teacher , review_user = user)
 
         # serializer.save(watchitem = review_queryset , review_user = user)
 

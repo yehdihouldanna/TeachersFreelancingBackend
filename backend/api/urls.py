@@ -1,6 +1,7 @@
 from django.urls import path, include
 from backend.api.views import *
-
+from django.conf import settings
+from django.views.static import serve
 
 urlpatterns = [
     # path('login/',obtain_auth_token,name="login"),
@@ -18,5 +19,22 @@ urlpatterns = [
     path('student_historic_lesson/<int:pk>/',LessonOrdersStudentHistoricView.as_view(),name="student_historic_lesson"),
     path('student_historic_book/<int:pk>/',BookOrdersStudentHistoricView.as_view(),name="student_historic_book"),
     path('lesson_order/<int:pk>/review-create/',ReviewCreate.as_view(),name='review-create'),
-    path('lesson_order_review/<int:pk>/',ReviewDetail.as_view(),name="review-detail"),
+    # path('lesson_order_review/<int:pk>/',ReviewDetail.as_view(),name="review-detail"),
+    path('teacher_review/<int:pk>/',ReviewDetail.as_view(),name="review-detail"),
 ]
+
+
+if settings.DEBUG:
+    urlpatterns += [
+        path('document_files/', serve, {
+            'document_root': settings.MEDIA_ROOT,
+        })
+    ]
+    # urlpatterns += [
+    #     path(r'^media/(?P<path>.*)$', serve, {
+    #         'document_root': settings.MEDIA_ROOT,
+    #     }),
+    #     path(r'^static/(?P<path>.*)$', serve, {
+    #         'document_root': settings.STATIC_ROOT,
+    #     }),
+    # ]
