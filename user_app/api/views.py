@@ -13,8 +13,8 @@ from user_app.api.serializers import (AccountSerializer, LoginSerializer,
                                       TeacherSerializer, TransactionSerializer,
                                       UserLoginSerializer)
 from user_app.models import Account, Student, Teacher, User
-
-
+from user_app.api.filters import TeacherFilter
+from django_filters.rest_framework import DjangoFilterBackend
 def get_tokens_for_user(user):
     refresh = RefreshToken.for_user(user)
 
@@ -157,6 +157,14 @@ class TeacherListView(generics.ListAPIView):
     queryset = Teacher.objects.filter(validated=True)
     # queryset = Teacher.objects.filter(validated=True,user__account__balance_gte=500)
     #TODO create custom filters for the teachers based , subjects , and diponibilities
+
+    #  #?filtering with django filters
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['classes','subjects','disponibilities']
+
+    # filter_fields = ('disponibilites','classes','specialties')
+    # filter_class = TeacherFilter  
+
     def get_queryset(self):
         accounts = Account.objects.filter(balance__gte=500)
         users = set(acc.user for acc in accounts) 

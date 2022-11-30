@@ -4,8 +4,16 @@
 - *Default values for speciality and subject*
 - *Return subject name (plain) not the primary key*
 - *Render order creation atomic*
+- *Add filters to the teacher API*
+- *Add filter by disponibility (day)*
+- *Add filter by subject*
+- *Add filter by class*
+- API : Add review to the teacher directly
+- Remove the field email as a required(email could be blank)
+- 
 - Fix transaction adds the double sum on validation (is it getting validated twice)
 - Fix Edition(RUD) de demande lesson
+- Downloadable pdf documents
 
 
 

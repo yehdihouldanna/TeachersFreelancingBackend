@@ -130,7 +130,10 @@ class TeacherRegistrationSerializer(serializers.ModelSerializer):
                 except:
                     user_data['first_name'] = ""
                 user_data['phone'] = validated_data.pop('phone')
-                user_data['email'] = validated_data.pop('email')
+                try :
+                    user_data['email'] = validated_data.pop('email')
+                except:
+                    user_data['email']=""
                 user_data['password'] = validated_data.pop('password')
                 user_data['password2'] = validated_data.pop('password2')
                 user_data['is_teacher'] = True

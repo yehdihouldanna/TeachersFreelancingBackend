@@ -175,4 +175,5 @@ class ReviewSerializer(serializers.ModelSerializer):
     class Meta : 
         model = Review
         fields= "__all__"
-        exlude=("lesson_order")
+        # exlude=("lesson_order")
+        exlude=("teacher")
