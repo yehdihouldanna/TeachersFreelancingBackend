@@ -56,13 +56,11 @@ class FormationAdmin(admin.ModelAdmin):
         return obj.school.name
 
 class ReviewAdmin(admin.ModelAdmin):
-    list_display = ["id","student","lesson","teacher","rating_","content","update"]
+    list_display = ["id","student","teacher","rating_","content","update"]
     def student(self,obj):
         return obj.review_user.username
-    def lesson(self,obj):
-        return obj.lesson_order.order.title
     def teacher(self,obj):
-        return obj.lesson_order.teacher.user.username
+        return obj.teacher.user.username
     def rating_(self,obj):
         r = obj.rating
         return "★"*int(r) +"☆"*(5-int(r)) 

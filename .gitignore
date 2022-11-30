@@ -90,4 +90,6 @@ db.sqlite3
 
 #Local documents : 
 document_files/
-teachers_diplomes
+teachers_diplomes/
+
+migrations/
