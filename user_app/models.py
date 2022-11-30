@@ -16,7 +16,7 @@ class User(AbstractUser):
     is_teacher = models.BooleanField(default=False,blank=True,null=True)
     is_student = models.BooleanField(default=False,blank=True,null=True)
     # USERNAME_FIELD = 'phone'
-    REQUIRED_FIELDS = ["phone","email"]
+    REQUIRED_FIELDS = ["phone"]
 
     def _str_(self):
         nature = "T" if self.is_teacher else "S" if self.is_student else " "
