@@ -9,6 +9,7 @@ from backend.models import (Book, BookOrder, Document, Formation, LessonOrder,
 from backend.models_basic import  Subject
 from backend.utils.utils import *
 from user_app.models import User
+from user_app.api.serializers import TeacherSerializer,UserSerializer
 
 
 class OrderSerializer(serializers.ModelSerializer):
@@ -171,9 +172,11 @@ class FormationSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class ReviewSerializer(serializers.ModelSerializer):
-    review_user = serializers.StringRelatedField(read_only=True)
+    # review_user = serializers.StringRelatedField(required=False,allow_blank=True,allow_null=True,read_only=True)
+    teacher = TeacherSerializer(required=False,write_only=True)
+    review_user = UserSerializer(required=False,write_only=True)
     class Meta : 
         model = Review
         fields= "__all__"
         # exlude=("lesson_order")
-        exlude=("teacher")
+        exlude=("teacher","review_user")
