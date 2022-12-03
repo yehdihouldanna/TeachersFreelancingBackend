@@ -75,20 +75,24 @@ class RegistrationSerializer(serializers.ModelSerializer):
         if password != password2:
             raise serializers.ValidationError({'error': ' Passwords should match'})
 
-        if User.objects.filter(email=self.validated_data['email']).exists():
-            raise serializers.ValidationError({'error' : 'Email already exists'})
-
         if User.objects.filter(username=self.validated_data['username']).exists():
             raise serializers.ValidationError({'error' : 'username already taken'})
 
         if User.objects.filter(phone=self.validated_data['phone']).exists():
             raise serializers.ValidationError({'error' : 'phone already taken'})
-
+        try :
+            email = self.validated_data['email']
+        except:
+            email = ""
         try : 
             first_name = self.validated_data['first_name']
         except:
             first_name = ""
-        user = User(phone=self.validated_data['phone'],email=self.validated_data['email'],username = self.validated_data['username'],first_name=first_name)
+
+        if email !="" and User.objects.filter(email=self.validated_data['email']).exists():
+            raise serializers.ValidationError({'error' : 'Email already exists'})
+
+        user = User(phone=self.validated_data['phone'],email=email,username = self.validated_data['username'],first_name=first_name)
         user.set_password(password)
         user.save()
 
@@ -99,7 +103,7 @@ class TeacherRegistrationSerializer(serializers.ModelSerializer):
     # user = RegistrationSerializer()
     phone = serializers.IntegerField(required=False)
     username = serializers.CharField(required=False,max_length=150)
-    email = serializers.EmailField(required=False,max_length=150)
+    email = serializers.EmailField(required=False,allow_blank=True,allow_null=True,max_length=150)
     first_name = serializers.CharField(required=False,max_length=150)
     
     password = serializers.CharField(style={'input_type':'password'},write_only=True)
@@ -217,7 +221,7 @@ class StudentRegistrationSerializer(RegistrationSerializer):
     
     phone = serializers.IntegerField(required=True)
     username = serializers.CharField(required=True,max_length=150)
-    email = serializers.EmailField(required=True,max_length=150)
+    email = serializers.EmailField(required=False,allow_blank=True,allow_null=True,max_length=150)
     
     password = serializers.CharField(style={'input_type':'password'},write_only=True)
     password2 = serializers.CharField(style={'input_type':'password'},write_only=True)
