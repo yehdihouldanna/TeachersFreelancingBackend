@@ -1,8 +1,8 @@
 # Teacher Freelance
 
-This 'backend' includes API and an amdin page, it is made in duality with another project called Teacher Freelance Mobile,
-
-Both repositories serve to develop an application that aids students and schools to find teachers for their lessons,
+This repository contains the backend code for a pairing app that pairs students or schools who are looking for teachers with teacher who are willing to provide theses courses.
+the front end (mobile app) was developped using flutter.
+This repository includes the code for all the APIs of the system and of the amdin web page.
 
 
 # List of available APIs: 
@@ -13,18 +13,16 @@ The list of all the available API could be checked with swagger at :
 To update the schema after each new api :
 `$ python manage.py spectacular --file schema.yml`
 
-don't forget to check the port and host url and then add `/api/schema/swagger-ui` to acess the swagger listing all available APIs in the backend,
+Don't forget to check the port and host url and then add `/api/schema/swagger-ui` to acess the swagger listing all available APIs in the backend,
 An api for account creation,
 An api for account edit
 An api for listview 
 
 *Note* : The logout functionality requires the client (mobile to delete it's store token)
 
-
 # Local postgres configuration : 
 username = postgres
 password = postgres
-
 
 ## Login details : 
 The backend supports login with phone number, username and email,
@@ -138,7 +136,6 @@ from pgdmin and remove all the previous migration files
 
 ```sql
 DROP DATABASE IF EXISTS teacher_freelance;
-
 CREATE DATABASE teacher_freelance;
 CREATE USER postgres WITH PASSWORD 'postgres';
 ALTER ROLE postgres SET client_encoding TO 'utf8';
@@ -163,9 +160,6 @@ python manage.py migrate
 ```
 
 if you encounter any problems in migrations reset the database.
-
-
-
 *Collectstatic files :* 
 `python manage.py collectstatic`
 
@@ -293,11 +287,6 @@ server {
 }
 
 
-# Virtual Host configuration for example.com
-#
-# You can move that to a different file under sites-available/ and symlink that
-# to sites-enabled/ to enable it.
-#
 #server {
 #	listen 80;
 #	listen [::]:80;
